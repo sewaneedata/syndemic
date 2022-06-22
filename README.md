@@ -18,7 +18,7 @@ You can see our final interactive dashboard here!
 
 # Presentation Report:
 
-Our Client [Presentation](file:///D:/DataLab/DataLab_2022/Deliverables/ClientPerspectiveReportPresentation.pptx.pdf)
+Our Client [Presentation](file:\\D:\DataLab\DataLab_2022\Deliverables\ClientPerspectiveReportPresentation.pptx.pdf)
 
 ## Written Report:
 
