@@ -26,7 +26,7 @@ The HIV, sexually transmitted infections (STIs), substance use disorders (SUDs),
 
 # Goal Setting, Acceptance Criteria and Pre Mortem
 
-Our [Presentation]( file:///D:/DataLab/DataLab_2022/Deliverables/Goal-setting%20and%20acceptance%20criteria%20_%20Pre-Mortem.pdf )
+Our [Presentation]( https://github.com/alankespinoza/DataLab_2022/blob/master/Deliverables/Goal-setting%20and%20acceptance%20criteria%20_%20Pre-Mortem.pdf )
 
 ## Goal-Setting Written Report
 
