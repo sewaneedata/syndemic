@@ -4,9 +4,13 @@
 library(tidyverse)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 setwd("D:/DataLab/syndemic")
 df <- read_csv("D:/DataLab/DataLab_2022/jacobzip.csv")
 codes <- read_csv("codes.csv")
+=======
+df <- read_csv("jacobzip.csv")
+>>>>>>> 595cc9bec4fefca6ad89f3f0f170fd2df0593117
 =======
 df <- read_csv("jacobzip.csv")
 >>>>>>> 595cc9bec4fefca6ad89f3f0f170fd2df0593117
