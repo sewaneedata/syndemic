@@ -1,25 +1,20 @@
-######################## Libraries and Datasets ----
+######################## Libraries ----
 
 library(readr)
 library(tidyverse)
 
-IP19 <- readr::read_csv('IP19_redacted.csv')
-
 ######################## Codebook Formatting----
 
-#Reads and formats ICD-10 2019 Codebook
-ICD <- readr::read_delim("icd10cm_order_2019.txt", delim = ' ', col_names = FALSE) %>% 
-  select(-X1, -X3, -X4) %>% 
-  unite(col = 'Details', X5:X62, sep = ' ', na.rm = TRUE)
-
-#Filters Codebook to only words we deem relevant
-ICD_Filtered <- ICD %>% 
-  filter(grepl('endocarditis| sepsis | osteomyelitis', Details, ignore.case = TRUE))
+#Reads the filtered ICD-10 2019 Codebook
+ICD <- read_csv("codes.csv")
 
 ######################## Dataset Formatting (IP19) ----
 
+#Base DataSet
+IP19 <- readr::read_csv('IP19_redacted.csv')
+
 #Filters out unnecessary columns
-IP19 <-IP19 %>% select(
+IP19 <- IP19 %>% select(
                   -Type_Bill,
                   -Fed_Tax_SubID,
                   -Fed_Tax_Num,
@@ -77,44 +72,48 @@ IP19 <-IP19 %>% select(
                   -MS_DRG_4digit,
                   -HAC,
                   -Admit_From_ED_Flag,
-                  -Wrong_Claim
-)
+                  -Wrong_Claim)
 
-#Limits the dataset to just the 385XX area code
-IP19_385XX <- IP19 %>% filter(Patient_Zip == '385XX')
+#Creates values with the ICD10 codes to be used to filter by later
+ICD_2 <- pull(ICD, code)
 
-#Combines all of the Diags into new variable
-IP19 <- 
+#Filtering DataSet to only ICD-10 codes we care about
+IP19_filtered_by_codes <- 
   IP19 %>% 
-  mutate()
+  filter(Diag1 %in% ICD_2 |
+         Diag2 %in% ICD_2 |
+         Diag3 %in% ICD_2 |
+         Diag4 %in% ICD_2 |
+         Diag5 %in% ICD_2 |
+         Diag6 %in% ICD_2 |
+         Diag7 %in% ICD_2 |
+         Diag8 %in% ICD_2 |
+         Diag9 %in% ICD_2 |
+         Diag10 %in% ICD_2 |
+         Diag11 %in% ICD_2 |
+         Diag12 %in% ICD_2 |
+         Diag13 %in% ICD_2 |
+         Diag14 %in% ICD_2 |
+         Diag15 %in% ICD_2 |
+         Diag16 %in% ICD_2 |
+         Diag17 %in% ICD_2 |
+         Diag18 %in% ICD_2)
 
-IP19 <- 
-  IP19$Diag1 %>%
-  paste(IP19$Diag1, 
-        IP19$Diag2, 
-        IP19$Diag3, 
-        IP19$Diag4,
-        IP19$Diag5,
-        IP19$Diag6,
-        IP19$Diag7,
-        IP19$Diag8,
-        IP19$Diag9,
-        IP19$Diag10,
-        IP19$Diag11,
-        IP19$Diag12,
-        IP19$Diag13,
-        IP19$Diag14,
-        IP19$Diag15,
-        IP19$Diag16,
-        IP19$Diag17,
-        IP19$Diag18)
+#Unites the 18 'diag' columns into one 'diagnosis' column
+IP19_diagnosis_filtered <- IP19_filtered_by_codes %>% 
+  unite(col = diagnosis, 
+        Diag1:Diag18,
+        sep = ' ',
+        remove = TRUE,
+        na.rm = TRUE)
 
+#or (filtered data by codes vs not)
 
-IP19 <- IP19_385XX %>% 
-  filter(Diag1 %in% c('A419', 'R652', 'R6520', 'R6521')) %>% 
-  count(Diag1)
-  #filter(Diag2 %in% c('A419', 'R652', 'R6520', 'R6521'))
+IP19_diagnosis_not_filtered <- IP19 %>% 
+  unite(col = diagnosis, 
+        Diag1:Diag18,
+        sep = ' ',
+        remove = TRUE,
+        na.rm = TRUE)
 
-ggplot(data = IP19, aes(x =Diag1)) +
-  geom_bar()
-
+########################

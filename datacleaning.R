@@ -2,19 +2,24 @@
 # June 23rd 2022 | Start of exploration and cleaning!
 #####################################################################
 library(tidyverse)
-library(gsheet)
-library(officer)
-library()
 
+<<<<<<< HEAD
+setwd("D:/DataLab/syndemic")
 df <- read_csv("D:/DataLab/DataLab_2022/jacobzip.csv")
+codes <- read_csv("codes.csv")
+=======
+df <- read_csv("jacobzip.csv")
+>>>>>>> 595cc9bec4fefca6ad89f3f0f170fd2df0593117
 
-# Reading in doc of IDC10codes
+# Reading in doc of IDC10codes and creating codes csv----------------
 icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
 icd<-icd %>% mutate(code = substr(icd$X1,1 , 7 ))
 icd$code <- icd$code %>% str_replace_all("[.]","") %>% 
   str_replace_all("[*]","")
+# Only run once
+write_csv(icd, "codes.csv")
 
-######################## Dataset Formatting #########################
+# Data set Formatting ----------------------------------------------- 
 
 #Filters out unnecessary columns
 train <-df %>% select(
@@ -80,7 +85,8 @@ train <-df %>% select(
 
 #Combines all of the Diags into new variable
 
-train1 <- train$Diag1 %>%
+train1<-train
+train1$Diag1 <- train$Diag1 %>%
   paste(df$Diag1,
         df$Diag2,
         df$Diag3,
@@ -101,23 +107,34 @@ train1 <- train$Diag1 %>%
         df$Diag18
         )
 
+train1<-train1 %>% 
+  select(-Diag2,
+         -Diag3,
+         -Diag4,
+         -Diag5,
+         -Diag6,
+         -Diag7,
+         -Diag8,
+         -Diag9,
+         -Diag10,
+         -Diag11,
+         -Diag12,
+         -Diag13,
+         -Diag14,
+         -Diag15,
+         -Diag16,
+         -Diag17,
+         -Diag18
+         )
+
+codevector<-pull(codes , code)
+
 keepall<-c()
-for(i in 1:492){
-  print()
-  keep<-grep(as.character(ICD_Filtered[i,1]),train$Diag1)
-  keepall<-keep+keepall
+for(i in 1:107){
+  keep<-grep(codevector[i], train1$Diag1)
+  keepall<-c(keep, keepall)
 }
+keepall<-unique(keepall)
+filtered_df1<-train1[keepall,]
 
-train<-train[keep,]
-
-keep<-grep(ICD_Filtered$X2, df$Diag1)
-train2 <- train1[keep,]
-
-IP19 <- IP19_385XX %>% 
-  filter(Diag1 %in% c('A419', 'R652', 'R6520', 'R6521')) %>% 
-  count(Diag1)
-#filter(Diag2 %in% c('A419', 'R652', 'R6520', 'R6521'))
-
-ggplot(data = IP19, aes(x =Diag1)) +
-  geom_bar()
 
