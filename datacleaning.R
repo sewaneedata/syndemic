@@ -1,19 +1,11 @@
-######################## Libraries and Datasets #####################
+######################## Libraries and Data sets ####################
 # June 23rd 2022 | Start of exploration and cleaning!
 #####################################################################
 library(tidyverse)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 setwd("D:/DataLab/syndemic")
 df <- read_csv("D:/DataLab/DataLab_2022/jacobzip.csv")
 codes <- read_csv("codes.csv")
-=======
-df <- read_csv("jacobzip.csv")
->>>>>>> 595cc9bec4fefca6ad89f3f0f170fd2df0593117
-=======
-df <- read_csv("jacobzip.csv")
->>>>>>> 595cc9bec4fefca6ad89f3f0f170fd2df0593117
 
 # Reading in doc of IDC10codes and creating codes csv----------------
 icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
@@ -24,8 +16,7 @@ icd$code <- icd$code %>% str_replace_all("[.]","") %>%
 write_csv(icd, "codes.csv")
 
 # Data set Formatting ----------------------------------------------- 
-
-#Filters out unnecessary columns
+# Filters out unnecessary columns
 train <-df %>% select(
   -Type_Bill,
   -Fed_Tax_SubID,
@@ -87,8 +78,7 @@ train <-df %>% select(
   -Wrong_Claim
 )
 
-#Combines all of the Diags into new variable
-
+#Combines all of the diagnosis into new variable column
 train1<-train
 train1$Diag1 <- train$Diag1 %>%
   paste(df$Diag1,
@@ -111,6 +101,7 @@ train1$Diag1 <- train$Diag1 %>%
         df$Diag18
         )
 
+# Gets rid of diagnosis columns because I combined it into one
 train1<-train1 %>% 
   select(-Diag2,
          -Diag3,
@@ -131,14 +122,19 @@ train1<-train1 %>%
          -Diag18
          )
 
+# creating vector of codes
 codevector<-pull(codes , code)
-
+# creating empty collection to then fill
 keepall<-c()
+# For loop to go through each code and compare to diagnosis column to keep their row number
 for(i in 1:107){
   keep<-grep(codevector[i], train1$Diag1)
   keepall<-c(keep, keepall)
 }
+# Getting rid of reapating row numbers
 keepall<-unique(keepall)
+# Picking just the rowws that mention any of the codes in our code collection.
 filtered_df1<-train1[keepall,]
+
 
 
