@@ -100,7 +100,7 @@ IP19_filtered_by_codes <-
          Diag18 %in% ICD_2)
 
 #Unites the 18 'diag' columns into one 'diagnosis' column
-IP19_dignosis_filtered <- IP19_filtered_by_codes %>% 
+IP19_diagnosis_filtered <- IP19_filtered_by_codes %>% 
   unite(col = diagnosis, 
         Diag1:Diag18,
         sep = ' ',
@@ -109,7 +109,7 @@ IP19_dignosis_filtered <- IP19_filtered_by_codes %>%
 
 #or (filtered data by codes vs not)
 
-IP19_dignosis_not_filtered <- IP19 %>% 
+IP19_diagnosis_not_filtered <- IP19 %>% 
   unite(col = diagnosis, 
         Diag1:Diag18,
         sep = ' ',
