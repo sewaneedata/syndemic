@@ -6,7 +6,7 @@ library(gsheet)
 library(officer)
 library()
 
-df <- read_csv("D:/DataLab/DataLab_2022/jacobzip.csv")
+df <- read_csv("jacobzip.csv")
 
 # Reading in doc of IDC10codes
 icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)

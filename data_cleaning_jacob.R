@@ -74,12 +74,46 @@ IP19 <- IP19 %>% select(
                   -Admit_From_ED_Flag,
                   -Wrong_Claim)
 
+#Creates values with the ICD10 codes to be used to filter by later
+ICD_2 <- pull(ICD, code)
+
+#Filtering DataSet to only ICD-10 codes we care about
+IP19_filtered_by_codes <- 
+  IP19 %>% 
+  filter(Diag1 %in% ICD_2 |
+         Diag2 %in% ICD_2 |
+         Diag3 %in% ICD_2 |
+         Diag4 %in% ICD_2 |
+         Diag5 %in% ICD_2 |
+         Diag6 %in% ICD_2 |
+         Diag7 %in% ICD_2 |
+         Diag8 %in% ICD_2 |
+         Diag9 %in% ICD_2 |
+         Diag10 %in% ICD_2 |
+         Diag11 %in% ICD_2 |
+         Diag12 %in% ICD_2 |
+         Diag13 %in% ICD_2 |
+         Diag14 %in% ICD_2 |
+         Diag15 %in% ICD_2 |
+         Diag16 %in% ICD_2 |
+         Diag17 %in% ICD_2 |
+         Diag18 %in% ICD_2)
+
 #Unites the 18 'diag' columns into one 'diagnosis' column
-IP19_diagnosis <- IP19 %>% 
+IP19_dignosis_filtered <- IP19_filtered_by_codes %>% 
   unite(col = diagnosis, 
         Diag1:Diag18,
         sep = ' ',
         remove = TRUE,
         na.rm = TRUE)
 
-######################## Data Exploration (IP19) ----
+#or (filtered data by codes vs not)
+
+IP19_dignosis_not_filtered <- IP19 %>% 
+  unite(col = diagnosis, 
+        Diag1:Diag18,
+        sep = ' ',
+        remove = TRUE,
+        na.rm = TRUE)
+
+########################
