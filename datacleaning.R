@@ -8,12 +8,11 @@ df <- read_csv("D:/DataLab/DataLab_2022/jacobzip.csv")
 codes <- read_csv("codes.csv")
 
 # Reading in doc of IDC10codes and creating codes csv----------------
-icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
-icd<-icd %>% mutate(code = substr(icd$X1,1 , 7 ))
-icd$code <- icd$code %>% str_replace_all("[.]","") %>% 
-  str_replace_all("[*]","")
+# icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
+# icd<-icd %>% mutate(code = substr(icd$X1,1 , 7 )) %>%mutate( astrid = ifelse(str_detect(icd$X1, "[*]"),TRUE,FALSE))
+# icd$code <- icd$code %>% str_replace_all("[.]","") %>% str_replace_all("[*]","")
 # Only run once
-write_csv(icd, "codes.csv")
+# write_csv(icd, "codes.csv")
 
 # Data set Formatting ----------------------------------------------- 
 # Filters out unnecessary columns
@@ -78,63 +77,102 @@ train <-df %>% select(
   -Wrong_Claim
 )
 
-#Combines all of the diagnosis into new variable column
-train1<-train
-train1$Diag1 <- train$Diag1 %>%
-  paste(df$Diag1,
-        df$Diag2,
-        df$Diag3,
-        df$Diag4,
-        df$Diag5,
-        df$Diag6,
-        df$Diag7,
-        df$Diag8,
-        df$Diag9,
-        df$Diag10,
-        df$Diag11,
-        df$Diag12,
-        df$Diag13,
-        df$Diag14,
-        df$Diag15,
-        df$Diag16,
-        df$Diag17,
-        df$Diag18
-        )
+# New Correct way of cleaning data-------------------------
+# Making all diagnosis into one column!
+# For all data change all trainpl into df
+trainpl<-df %>% 
+  select( ...1,
+          Diag1:Diag18
+  )
+trainpl<-trainpl %>% pivot_longer(starts_with("Diag"))
 
-# Gets rid of diagnosis columns because I combined it into one
-train1<-train1 %>% 
-  select(-Diag2,
-         -Diag3,
-         -Diag4,
-         -Diag5,
-         -Diag6,
-         -Diag7,
-         -Diag8,
-         -Diag9,
-         -Diag10,
-         -Diag11,
-         -Diag12,
-         -Diag13,
-         -Diag14,
-         -Diag15,
-         -Diag16,
-         -Diag17,
-         -Diag18
-         )
+# Get codes that tell us with what it should start with
+swdf<-codes %>% filter(astrid)
+swv<-pull(swdf,code)
 
-# creating vector of codes
-codevector<-pull(codes , code)
-# creating empty collection to then fill
-keepall<-c()
-# For loop to go through each code and compare to diagnosis column to keep their row number
-for(i in 1:107){
-  keep<-grep(codevector[i], train1$Diag1)
-  keepall<-c(keep, keepall)
-}
-# Getting rid of reapating row numbers
-keepall<-unique(keepall)
-# Picking just the rowws that mention any of the codes in our code collection.
-filtered_df1<-train1[keepall,]
+# Look for any person id that has codes that start with any of our start with patterns
+swfinal<-trainpl %>% filter(substr(value,1,3) %in% swv )
+
+# Get codes that are fixed and we only want them to match that specific code
+fixeddf<-codes %>% filter(!astrid)
+fixedv<-pull(fixeddf,code)
+
+# Look for any person id that has code that matches any of our fixed codes
+fixedfinal<-trainpl %>% filter(value %in% fixedv)
+
+# Make the patient ids in vectors and join them
+swidv<-pull(swfinal,...1)
+ffidv<-pull(fixedfinal,...1)
+fidv<-c(ffidv, swidv)
+fidv<-unique(fidv)
+
+# Get person with ids that we got and care about
+cleands<-train %>% filter( ...1 %in% fidv)
+
+
+# #Combines all of the diagnosis into new variable column--------------
+# train1<-train
+# train1$Diag1 <- train$Diag1 %>%
+#   paste(df$Diag1,
+#         df$Diag2,
+#         df$Diag3,
+#         df$Diag4,
+#         df$Diag5,
+#         df$Diag6,
+#         df$Diag7,
+#         df$Diag8,
+#         df$Diag9,
+#         df$Diag10,
+#         df$Diag11,
+#         df$Diag12,
+#         df$Diag13,
+#         df$Diag14,
+#         df$Diag15,
+#         df$Diag16,
+#         df$Diag17,
+#         df$Diag18
+#   )
+# 
+# # Gets rid of diagnosis columns because I combined it into one
+# train1<-train1 %>% 
+#   select(-Diag2:-Diag18)
+# 
+# # Trying to clean data unsuccessfully-------------------------------------------
+# codevector<-pull(codes , code)
+# # creating empty collection to then fill
+# keepall<-c()
+# # For loop to go through each code and compare to diagnosis column to keep their row number
+# for(i in 1:107){
+#   keep<-grep(codevector[i], train1$Diag1)
+#   keepall<-c(keep, keepall)
+# }
+# # Getting rid of repeating row numbers
+# keepall<-unique(keepall)
+# # Picking just the rows that mention any of the codes in our code collection.
+# filtered_df1<-train1[keepall,]
+# 
+# sample(filtered_df1$Diag1, 6)
+# 
+# # Filtered to make sure data start with the codes!
+# # filtered_df2<-filtered_df1 %>% filter(str_starts(Diag1 , paste0(codevector, collapse="|")))
+# 
+# # New way of filtering data and didn't work-------------------------------------
+# # Selecting columns I want
+# trainnew<-df %>% 
+#   select( ...1,
+#           Diag1:Diag18
+#   )
+# trainnew<-trainnew %>% pivot_longer(starts_with("Diag"))
+# 
+# ke<-data.frame()
+# 
+# ke<-trainnew %>% filter(substr(value,1,nchar(codevector[104])) == as.character(codevector[104]))
+# 
+# 
+# 
+# # trainnew<-trainnew %>% mutate(checkcode = str_starts(value , paste0(codevector, collapse="|")))
+# # filter_ids<-trainnew %>% filter(str_starts(value , paste0(codevector, collapse="|")))
+
 
 
 

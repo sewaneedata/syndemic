@@ -1,108 +1,108 @@
-X1,code
-"F11.10 - Opioid abuse, uncomplicated",F1110 
-"F11.11 - Opioid abuse, in remission",F1111 
-F11.12 - Opioid abuse with intoxication,F1112 
-F11.14 - Opioid abuse with opioid-induced mood disorder,F1114 
-F11.15 - Opioid abuse with opioid-induced psychotic disorder,F1115 
-F11.18 - Opioid abuse with other opioid-induced disorder,F1118 
-F11.19 - Opioid abuse with unspecified opioid-induced disorder,F1119 
-"F11.20 Opioid dependence, uncomplicated",F1120 
-"F11.21 Opioid dependence, in remission",F1121 
-F11.22 Opioid dependence with intoxication,F1122 
-F11.23 Opioid dependence with withdrawal,F1123 
-F11.24 Opioid dependence with opioid-induced mood disorder,F1124 
-F11.25 Opioid dependence with opioid-induced psychotic disorder,F1125 
-F11.28 Opioid dependence with other opioid-induced disorder,F1128 
-F11.29 Opioid dependence with unspecified opioid-induced disorder,F1129 
-"F11.90 Opioid use, unspecified, uncomplicated",F1190 
-"F11.92 Opioid use, unspecified with intoxication",F1192 
-"F11.93 Opioid use, unspecified with withdrawal",F1193 
-"F11.94 Opioid use, unspecified with opioid-induced mood disorder",F1194 
-"F11.95 Opioid use, unspecified with opioid-induced psychotic disorder",F1195 
-"F11.98 Opioid use, unspecified with other specified opioid-induced disorder",F1198 
-"F11.99 Opioid use, unspecified with unspecified opioid-induced disorder",F1199 
-"F13.20 Sedative, hypnotic or anxiolytic dependence, uncomplicated",F1320 
-"F13.21 Sedative, hypnotic or anxiolytic dependence, in remission",F1321 
-"F13.22 Sedative, hypnotic or anxiolytic dependence with intoxication",F1322 
-"F13.23 Sedative, hypnotic or anxiolytic dependence with withdrawal",F1323 
-"F13.24 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced mood disorder",F1324 
-"F13.25 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced psychotic disorder",F1325 
-"F13.26 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced persisting amnestic disorder",F1326 
-"F13.27 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced persisting dementia",F1327 
-"F13.28 Sedative, hypnotic or anxiolytic dependence with other sedative, hypnotic or anxiolytic-induced disorders",F1328 
-"F13.29 Sedative, hypnotic or anxiolytic dependence with unspecified sedative, hypnotic or anxiolytic-induced disorder",F1329 
-"F14.10 Cocaine abuse, uncomplicated",F1410 
-F14.12 Cocaine abuse with intoxication,F1412 
-F14.14 Cocaine abuse with cocaine-induced mood disorder,F1414 
-F14.15 Cocaine abuse with cocaine-induced psychotic disorder,F1415 
-F14.18 Cocaine abuse with other cocaine-induced disorder,F1418 
-F14.19 Cocaine abuse with unspecified cocaine-induced disorder,F1419 
-"F14.20 Cocaine dependence, uncomplicated",F1420 
-"F14.21 Cocaine dependence, in remission",F1421 
-F14.22 Cocaine dependence with intoxication,F1422 
-F14.23 Cocaine dependence with withdrawal,F1423 
-F14.24 Cocaine dependence with cocaine-induced mood disorder,F1424 
-F14.25 Cocaine dependence with cocaine-induced psychotic disorder,F1425 
-F14.28 Cocaine dependence with other cocaine-induced disorder,F1428 
-F14.29 Cocaine dependence with unspecified cocaine-induced disorder,F1429 
-"F14.90 Cocaine use, unspecified, uncomplicated",F1490 
-"F14.92 Cocaine use, unspecified with intoxication",F1492 
-"F14.94 Cocaine use, unspecified with cocaine-induced mood disorder",F1494 
-"F14.95 Cocaine use, unspecified with cocaine-induced psychotic disorder",F1495 
-"F14.98 Cocaine use, unspecified with other specified cocaine-induced disorder",F1498 
-"F14.99 Cocaine use, unspecified with unspecified cocaine-induced disorder",F1499 
-F15      Other stimulant related disorders,F15    
-"F15.10 Other stimulant abuse, uncomplicated",F1510 
-F15.12 Other stimulant abuse with intoxication,F1512 
-F15.14 Other stimulant abuse with stimulant-induced mood disorder,F1514 
-F15.15 Other stimulant abuse with stimulant-induced psychotic disorder,F1515 
-F15.18 Other stimulant abuse with other stimulant-induced disorder,F1518 
-F15.19 Other stimulant abuse with unspecified stimulant-induced disorder,F1519 
-"F15.20 Other stimulant dependence, uncomplicated",F1520 
-"F15.21 Other stimulant dependence, in remission",F1521 
-F15.22 Other stimulant dependence with intoxication,F1522 
-F15.23 Other stimulant dependence with withdrawal,F1523 
-F15.24 Other stimulant dependence with stimulant-induced mood disorder,F1524 
-F15.25 Other stimulant dependence with stimulant-induced psychotic disorder,F1525 
-F15.28 Other stimulant dependence with other stimulant-induced disorder,F1528 
-F15.29 Other stimulant dependence with unspecified stimulant-induced disorder,F1529 
-"F15.90 Other stimulant use, unspecified, uncomplicated",F1590 
-"F15.92 Other stimulant use, unspecified with intoxication",F1592 
-"F15.93 Other stimulant use, unspecified with withdrawal",F1593 
-"F15.94 Other stimulant use, unspecified with stimulant-induced mood disorder",F1594 
-"F15.95 Other stimulant use, unspecified with stimulant-induced psychotic disorder",F1595 
-"F15.98 Other stimulant use, unspecified with other stimulant-induced disorder",F1598 
-"F15.99 Other stimulant use, unspecified with unspecified stimulant-induced disorder",F1599 
-"F19.10 Other psychoactive substance abuse, uncomplicated",F1910 
-F19.12 Other psychoactive substance abuse with intoxication,F1912 
-F19.14 Other psychoactive substance abuse with psychoactive substance-induced mood disorder,F1914 
-F19.15 Other psychoactive substance abuse with psychoactive substance-induced psychotic disorder,F1915 
-F19.16 Other psychoactive substance abuse with psychoactive substance-induced persisting amnestic disorder,F1916 
-F19.17 Other psychoactive substance abuse with psychoactive substance-induced persisting dementia,F1917 
-F19.18 Other psychoactive substance abuse with other psychoactive substance-induced disorders,F1918 
-F19.19 Other psychoactive substance abuse with unspecified psychoactive substance-induced disorder,F1919 
-"T40*    Poisoning by, adverse effect of and underdosing of narcotics and psychodysleptics [hallucinogens]",T40   
-"T42*    Poisoning by, adverse effect of and underdosing of antiepileptic, sedative- hypnotic and antiparkinsonism drugs",T42   
-"T44*    Poisoning by, adverse effect of and underdosing of drugs primarily affecting the autonomic nervous system",T44   
-"T46*    Poisoning by, adverse effect of and underdosing of agents primarily affecting the cardiovascular system",T46   
-"T48*    Poisoning by, adverse effect of and underdosing of agents primarily acting on smooth and skeletal muscles and the respiratory system",T48   
-I33.0    Acute and subacute infective endocarditis,I330  
-"I33.9     Acute and subacute endocarditis, unspecified",I339  
-"I38     Endocarditis, valve unspecified",I38    
-I39     Endocarditis and heart valve disorders in diseases classified elsewhere,I39    
-A48.0     Gas gangrene (also known as clostridial myonecrosis and myonecrosis),A480  
-A40*    Sepsis due to streptococcus,A40   
-"A41*     Other Sepsis (excludes postprocedural sepsis, sepsis during labor, following abortion, ectopic or molar pregnancy, immunization, infusion, transfusion of theraputic injection)",A41   
-M86*    Osteomyelitis,M86   
-M00*    Staphlococcal arthritis,M00   
-M465    Osteomyelitis or septic arthritis,M465   
-L02*   Cutaneous abscess,L02   
-L03*    Cellulitis,L03   
-I80*    Phlebitis and thrombophlebitis,I80   
-I26.90    Septic pulmonary embolism without acute cor pulmonale,I2690 
-M72.6    Necrotizing fasciitis (no cases in MI 2016-2018),M726  
-A48.52    Wound botulism (no cases in MI 2016-2018),A4852 
-"A35    Other tetanus (i.e. excludes obstetrical tetanus, tetanus neonatorum)",A35    
-L98.499 Non-pressure chronic ulcer of skin of other sites with unspecified severity,L98499
-L97.909  Ulsers: lower limb (atrophic) (chronic) (neurogenic) (perforating) (pyogenic) (trophic) (tropical),L97909
-L97.909   Non-pressure chronic ulcer of unspecified part of unspecified lower leg with unspecified severity,L97909
+X1,code,astrid
+"F11.10 - Opioid abuse, uncomplicated",F1110 ,FALSE
+"F11.11 - Opioid abuse, in remission",F1111 ,FALSE
+F11.12 - Opioid abuse with intoxication,F1112 ,FALSE
+F11.14 - Opioid abuse with opioid-induced mood disorder,F1114 ,FALSE
+F11.15 - Opioid abuse with opioid-induced psychotic disorder,F1115 ,FALSE
+F11.18 - Opioid abuse with other opioid-induced disorder,F1118 ,FALSE
+F11.19 - Opioid abuse with unspecified opioid-induced disorder,F1119 ,FALSE
+"F11.20 Opioid dependence, uncomplicated",F1120 ,FALSE
+"F11.21 Opioid dependence, in remission",F1121 ,FALSE
+F11.22 Opioid dependence with intoxication,F1122 ,FALSE
+F11.23 Opioid dependence with withdrawal,F1123 ,FALSE
+F11.24 Opioid dependence with opioid-induced mood disorder,F1124 ,FALSE
+F11.25 Opioid dependence with opioid-induced psychotic disorder,F1125 ,FALSE
+F11.28 Opioid dependence with other opioid-induced disorder,F1128 ,FALSE
+F11.29 Opioid dependence with unspecified opioid-induced disorder,F1129 ,FALSE
+"F11.90 Opioid use, unspecified, uncomplicated",F1190 ,FALSE
+"F11.92 Opioid use, unspecified with intoxication",F1192 ,FALSE
+"F11.93 Opioid use, unspecified with withdrawal",F1193 ,FALSE
+"F11.94 Opioid use, unspecified with opioid-induced mood disorder",F1194 ,FALSE
+"F11.95 Opioid use, unspecified with opioid-induced psychotic disorder",F1195 ,FALSE
+"F11.98 Opioid use, unspecified with other specified opioid-induced disorder",F1198 ,FALSE
+"F11.99 Opioid use, unspecified with unspecified opioid-induced disorder",F1199 ,FALSE
+"F13.20 Sedative, hypnotic or anxiolytic dependence, uncomplicated",F1320 ,FALSE
+"F13.21 Sedative, hypnotic or anxiolytic dependence, in remission",F1321 ,FALSE
+"F13.22 Sedative, hypnotic or anxiolytic dependence with intoxication",F1322 ,FALSE
+"F13.23 Sedative, hypnotic or anxiolytic dependence with withdrawal",F1323 ,FALSE
+"F13.24 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced mood disorder",F1324 ,FALSE
+"F13.25 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced psychotic disorder",F1325 ,FALSE
+"F13.26 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced persisting amnestic disorder",F1326 ,FALSE
+"F13.27 Sedative, hypnotic or anxiolytic dependence with sedative, hypnotic or anxiolytic-induced persisting dementia",F1327 ,FALSE
+"F13.28 Sedative, hypnotic or anxiolytic dependence with other sedative, hypnotic or anxiolytic-induced disorders",F1328 ,FALSE
+"F13.29 Sedative, hypnotic or anxiolytic dependence with unspecified sedative, hypnotic or anxiolytic-induced disorder",F1329 ,FALSE
+"F14.10 Cocaine abuse, uncomplicated",F1410 ,FALSE
+F14.12 Cocaine abuse with intoxication,F1412 ,FALSE
+F14.14 Cocaine abuse with cocaine-induced mood disorder,F1414 ,FALSE
+F14.15 Cocaine abuse with cocaine-induced psychotic disorder,F1415 ,FALSE
+F14.18 Cocaine abuse with other cocaine-induced disorder,F1418 ,FALSE
+F14.19 Cocaine abuse with unspecified cocaine-induced disorder,F1419 ,FALSE
+"F14.20 Cocaine dependence, uncomplicated",F1420 ,FALSE
+"F14.21 Cocaine dependence, in remission",F1421 ,FALSE
+F14.22 Cocaine dependence with intoxication,F1422 ,FALSE
+F14.23 Cocaine dependence with withdrawal,F1423 ,FALSE
+F14.24 Cocaine dependence with cocaine-induced mood disorder,F1424 ,FALSE
+F14.25 Cocaine dependence with cocaine-induced psychotic disorder,F1425 ,FALSE
+F14.28 Cocaine dependence with other cocaine-induced disorder,F1428 ,FALSE
+F14.29 Cocaine dependence with unspecified cocaine-induced disorder,F1429 ,FALSE
+"F14.90 Cocaine use, unspecified, uncomplicated",F1490 ,FALSE
+"F14.92 Cocaine use, unspecified with intoxication",F1492 ,FALSE
+"F14.94 Cocaine use, unspecified with cocaine-induced mood disorder",F1494 ,FALSE
+"F14.95 Cocaine use, unspecified with cocaine-induced psychotic disorder",F1495 ,FALSE
+"F14.98 Cocaine use, unspecified with other specified cocaine-induced disorder",F1498 ,FALSE
+"F14.99 Cocaine use, unspecified with unspecified cocaine-induced disorder",F1499 ,FALSE
+F15      Other stimulant related disorders,F15    ,FALSE
+"F15.10 Other stimulant abuse, uncomplicated",F1510 ,FALSE
+F15.12 Other stimulant abuse with intoxication,F1512 ,FALSE
+F15.14 Other stimulant abuse with stimulant-induced mood disorder,F1514 ,FALSE
+F15.15 Other stimulant abuse with stimulant-induced psychotic disorder,F1515 ,FALSE
+F15.18 Other stimulant abuse with other stimulant-induced disorder,F1518 ,FALSE
+F15.19 Other stimulant abuse with unspecified stimulant-induced disorder,F1519 ,FALSE
+"F15.20 Other stimulant dependence, uncomplicated",F1520 ,FALSE
+"F15.21 Other stimulant dependence, in remission",F1521 ,FALSE
+F15.22 Other stimulant dependence with intoxication,F1522 ,FALSE
+F15.23 Other stimulant dependence with withdrawal,F1523 ,FALSE
+F15.24 Other stimulant dependence with stimulant-induced mood disorder,F1524 ,FALSE
+F15.25 Other stimulant dependence with stimulant-induced psychotic disorder,F1525 ,FALSE
+F15.28 Other stimulant dependence with other stimulant-induced disorder,F1528 ,FALSE
+F15.29 Other stimulant dependence with unspecified stimulant-induced disorder,F1529 ,FALSE
+"F15.90 Other stimulant use, unspecified, uncomplicated",F1590 ,FALSE
+"F15.92 Other stimulant use, unspecified with intoxication",F1592 ,FALSE
+"F15.93 Other stimulant use, unspecified with withdrawal",F1593 ,FALSE
+"F15.94 Other stimulant use, unspecified with stimulant-induced mood disorder",F1594 ,FALSE
+"F15.95 Other stimulant use, unspecified with stimulant-induced psychotic disorder",F1595 ,FALSE
+"F15.98 Other stimulant use, unspecified with other stimulant-induced disorder",F1598 ,FALSE
+"F15.99 Other stimulant use, unspecified with unspecified stimulant-induced disorder",F1599 ,FALSE
+"F19.10 Other psychoactive substance abuse, uncomplicated",F1910 ,FALSE
+F19.12 Other psychoactive substance abuse with intoxication,F1912 ,FALSE
+F19.14 Other psychoactive substance abuse with psychoactive substance-induced mood disorder,F1914 ,FALSE
+F19.15 Other psychoactive substance abuse with psychoactive substance-induced psychotic disorder,F1915 ,FALSE
+F19.16 Other psychoactive substance abuse with psychoactive substance-induced persisting amnestic disorder,F1916 ,FALSE
+F19.17 Other psychoactive substance abuse with psychoactive substance-induced persisting dementia,F1917 ,FALSE
+F19.18 Other psychoactive substance abuse with other psychoactive substance-induced disorders,F1918 ,FALSE
+F19.19 Other psychoactive substance abuse with unspecified psychoactive substance-induced disorder,F1919 ,FALSE
+"T40*    Poisoning by, adverse effect of and underdosing of narcotics and psychodysleptics [hallucinogens]",T40   ,TRUE
+"T42*    Poisoning by, adverse effect of and underdosing of antiepileptic, sedative- hypnotic and antiparkinsonism drugs",T42   ,TRUE
+"T44*    Poisoning by, adverse effect of and underdosing of drugs primarily affecting the autonomic nervous system",T44   ,TRUE
+"T46*    Poisoning by, adverse effect of and underdosing of agents primarily affecting the cardiovascular system",T46   ,TRUE
+"T48*    Poisoning by, adverse effect of and underdosing of agents primarily acting on smooth and skeletal muscles and the respiratory system",T48   ,TRUE
+I33.0    Acute and subacute infective endocarditis,I330  ,FALSE
+"I33.9     Acute and subacute endocarditis, unspecified",I339  ,FALSE
+"I38     Endocarditis, valve unspecified",I38    ,FALSE
+I39     Endocarditis and heart valve disorders in diseases classified elsewhere,I39    ,FALSE
+A48.0     Gas gangrene (also known as clostridial myonecrosis and myonecrosis),A480  ,FALSE
+A40*    Sepsis due to streptococcus,A40   ,TRUE
+"A41*     Other Sepsis (excludes postprocedural sepsis, sepsis during labor, following abortion, ectopic or molar pregnancy, immunization, infusion, transfusion of theraputic injection)",A41   ,TRUE
+M86*    Osteomyelitis,M86   ,TRUE
+M00*    Staphlococcal arthritis,M00   ,TRUE
+M465    Osteomyelitis or septic arthritis,M465   ,FALSE
+L02*   Cutaneous abscess,L02   ,TRUE
+L03*    Cellulitis,L03   ,TRUE
+I80*    Phlebitis and thrombophlebitis,I80   ,TRUE
+I26.90    Septic pulmonary embolism without acute cor pulmonale,I2690 ,FALSE
+M72.6    Necrotizing fasciitis (no cases in MI 2016-2018),M726  ,FALSE
+A48.52    Wound botulism (no cases in MI 2016-2018),A4852 ,FALSE
+"A35    Other tetanus (i.e. excludes obstetrical tetanus, tetanus neonatorum)",A35    ,FALSE
+L98.499 Non-pressure chronic ulcer of skin of other sites with unspecified severity,L98499,FALSE
+L97.909  Ulsers: lower limb (atrophic) (chronic) (neurogenic) (perforating) (pyogenic) (trophic) (tropical),L97909,FALSE
+L97.909   Non-pressure chronic ulcer of unspecified part of unspecified lower leg with unspecified severity,L97909,FALSE
