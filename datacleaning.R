@@ -4,83 +4,13 @@
 library(tidyverse)
 
 setwd("D:/DataLab/syndemic")
-df <- read_csv("D:/DataLab/DataLab_2022/jacobzip.csv")
 codes <- read_csv("codes.csv")
-
-# Reading in doc of IDC10codes and creating codes csv----------------
-# icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
-# icd<-icd %>% mutate(code = substr(icd$X1,1 , 7 )) %>%mutate( astrid = ifelse(str_detect(icd$X1, "[*]"),TRUE,FALSE))
-# icd$code <- icd$code %>% str_replace_all("[.]","") %>% str_replace_all("[*]","")
-# Only run once
-# write_csv(icd, "codes.csv")
-
-# Data set Formatting ----------------------------------------------- 
-# Filters out unnecessary columns
-train <-df %>% select(
-  -Type_Bill,
-  -Fed_Tax_SubID,
-  -Fed_Tax_Num,
-  -Admission_Type,
-  -Admission_Source,
-  -Do_Not_Resuscitate,
-  -Accident_St,
-  -starts_with("Units_Service"), #[1:18]
-  -Primary_Health_Plan_Id,
-  -Secondary_Health_Plan_Id,
-  -Tertiary_Health_Plan_Id,
-  -Primary_Patient_Rel_Insr,
-  -Secondary_Patient_Rel_Insr,
-  -Tertiary_Patient_Rel_Insr,
-  -Dx_Px_Qualifier,
-  -starts_with("POA"), #[1:18]
-  -starts_with("Patient_Reason_Visit"),#[1:3],
-  -Prospect_Pay_Code,
-  -starts_with("Ecode"), #[1:3]
-  -starts_with("E_POA"), #[1:3]
-  -Type_ER_Visit,
-  -Outcome_ER_Visit,
-  -Inpatient_Flag,
-  -ER_Flag,
-  -PET_Flag,
-  -ASTC_Flag,
-  -Lithotripsy_Flag,
-  -MRI_MRA_Flag,
-  -Megavolt_Rad_Flag,
-  -CT_Flag,
-  -Fatal_Error_Flag,
-  -starts_with("Record_Num"), #[1:2]
-  -Bill_End,
-  -MUL,
-  -Patient_ID,
-  -TN_Co_Res,
-  -Payer_A,
-  -Payer_B,
-  -Payer_C,
-  -Amount_Counter,
-  -Race,
-  -LOS,
-  -DRG_Rank,
-  -Inpat_Record_Flag,
-  -ER_Record_Flag,
-  -ASTC_Record_Flag,
-  -Obs_23hr_Record_Flag,
-  -CON_Flag,
-  -Cumulative_Record_Flag,
-  -Reportable_Flag,
-  -TN_Co_Unk,
-  -Processing_Period,
-  -MS_MDC,
-  -MS_DRG,
-  -MS_DRG_4digit,
-  -HAC,
-  -Admit_From_ED_Flag,
-  -Wrong_Claim
-)
-
-# New Correct way of cleaning data-------------------------
+data<-read_csv("D:/DataLab/DataLab_2022/impdata.csv")
+#####################################################################
+# New Correct way of cleaning data-----------------------------------
 # Making all diagnosis into one column!
-# For all data change all trainpl into df
-trainpl<-df %>% 
+# For all data change all trainpl into data
+trainpl<-data %>% 
   select( ...1,
           Diag1:Diag18
   )
@@ -107,10 +37,83 @@ fidv<-c(ffidv, swidv)
 fidv<-unique(fidv)
 
 # Get person with ids that we got and care about
-cleands<-train %>% filter( ...1 %in% fidv)
+cleands<-data %>% filter( ...1 %in% fidv)
 
-
-# #Combines all of the diagnosis into new variable column--------------
+# Possibly useful code but not the most important--------------------
+#####################################################################
+# Reading in doc of IDC10codes and creating codes csv----------------
+# icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
+# icd<-icd %>% mutate(code = substr(icd$X1,1 , 7 )) %>%mutate( astrid = ifelse(str_detect(icd$X1, "[*]"),TRUE,FALSE))
+# icd$code <- icd$code %>% str_replace_all("[.]","") %>% str_replace_all("[*]","")
+# Only run once
+# write_csv(icd, "codes.csv")
+#####################################################################
+# Data set Formatting ----------------------------------------------- 
+# New data already has only selected rows.
+# Filters out unnecessary columns
+# train <-df %>% select(
+#   -Type_Bill,
+#   -Fed_Tax_SubID,
+#   -Fed_Tax_Num,
+#   -Admission_Type,
+#   -Admission_Source,
+#   -Do_Not_Resuscitate,
+#   -Accident_St,
+#   -starts_with("Units_Service"), #[1:18]
+#   -Primary_Health_Plan_Id,
+#   -Secondary_Health_Plan_Id,
+#   -Tertiary_Health_Plan_Id,
+#   -Primary_Patient_Rel_Insr,
+#   -Secondary_Patient_Rel_Insr,
+#   -Tertiary_Patient_Rel_Insr,
+#   -Dx_Px_Qualifier,
+#   -starts_with("POA"), #[1:18]
+#   -starts_with("Patient_Reason_Visit"),#[1:3],
+#   -Prospect_Pay_Code,
+#   -starts_with("Ecode"), #[1:3]
+#   -starts_with("E_POA"), #[1:3]
+#   -Type_ER_Visit,
+#   -Outcome_ER_Visit,
+#   -Inpatient_Flag,
+#   -ER_Flag,
+#   -PET_Flag,
+#   -ASTC_Flag,
+#   -Lithotripsy_Flag,
+#   -MRI_MRA_Flag,
+#   -Megavolt_Rad_Flag,
+#   -CT_Flag,
+#   -Fatal_Error_Flag,
+#   -starts_with("Record_Num"), #[1:2]
+#   -Bill_End,
+#   -MUL,
+#   -Patient_ID,
+#   -TN_Co_Res,
+#   -Payer_A,
+#   -Payer_B,
+#   -Payer_C,
+#   -Amount_Counter,
+#   -Race,
+#   -LOS,
+#   -DRG_Rank,
+#   -Inpat_Record_Flag,
+#   -ER_Record_Flag,
+#   -ASTC_Record_Flag,
+#   -Obs_23hr_Record_Flag,
+#   -CON_Flag,
+#   -Cumulative_Record_Flag,
+#   -Reportable_Flag,
+#   -TN_Co_Unk,
+#   -Processing_Period,
+#   -MS_MDC,
+#   -MS_DRG,
+#   -MS_DRG_4digit,
+#   -HAC,
+#   -Admit_From_ED_Flag,
+#   -Wrong_Claim
+# )
+# paste0(colnames(train), collapse = " , ")
+#####################################################################
+# Combines all of the diagnosis into one variable column-------------
 # train1<-train
 # train1$Diag1 <- train$Diag1 %>%
 #   paste(df$Diag1,
@@ -137,7 +140,7 @@ cleands<-train %>% filter( ...1 %in% fidv)
 # train1<-train1 %>% 
 #   select(-Diag2:-Diag18)
 # 
-# # Trying to clean data unsuccessfully-------------------------------------------
+# Trying to clean data unsuccessfully-------------------------------------------
 # codevector<-pull(codes , code)
 # # creating empty collection to then fill
 # keepall<-c()
@@ -156,7 +159,7 @@ cleands<-train %>% filter( ...1 %in% fidv)
 # # Filtered to make sure data start with the codes!
 # # filtered_df2<-filtered_df1 %>% filter(str_starts(Diag1 , paste0(codevector, collapse="|")))
 # 
-# # New way of filtering data and didn't work-------------------------------------
+# New way of filtering data and didn't work-------------------------------------
 # # Selecting columns I want
 # trainnew<-df %>% 
 #   select( ...1,
