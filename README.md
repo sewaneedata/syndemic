@@ -75,4 +75,47 @@ Our [Presentation]( https://github.com/alankespinoza/DataLab_2022/blob/master/De
 * If we have a hard time creating an acceptable predictive model, we will consult with Datalab’s technical staff and allow them to help guide our next steps. 
 * If we decide not to produce the predictive model, we will let it be a starting point for future Datalab interns or Amber Coyne’s tech staff to pick up and work on
 
+# Literature Review 
+
+The term “syndemic” comes from combining the terms “synergy” and “epidemic.” Though the concept of a syndemic may be new, the prevalence of the factors that create a syndemic are well known. The uptick of HIV, substance use disorders, sexually-transmitted infections, and viral hepatitis are documented and understood. Our partner, Amber Coyne is spearheading the initiative, End the Syndemic Tennessee, which is focused on lessening the prevalence of those conditions by advocating for the establishment of more syringe exchange programs in Tennessee. The website for the initiative, https://endthesyndemictn.org/learn-more/, that is devoted to making the public aware of the syndemic that is affecting their communities. The website contains national and state-specific facts around the factors that the End the Syndemic are trying to alleviate, along with interactive dashboards around mental health data and the factors contributing to the syndemic. 
+
+Raising awareness and making information about the syndemic available will help spark community conversations about the syndemic, and hopefully garner support for more syringe exchange programs (SEPs). Despite numerous studies such as an analysis of Washington D.C’s SEPs, a longitudinal study conducted in New York,  and the Michigan Study, which is used as a reference for our project, there is not universal support for SEPs. With the intent to gain support for SEPs across the likes of many, like the Michigan Study, our team intends to frame the syndemic in a way that details the economic impact of the treatment costs, instead of solely focusing on the community health aspect of the syndemic. At the conclusion of the project, we will produce a dashboard that reflects the cost analysis of the treatments for HIV, STIs, viral hepatitis, and SUDs. 
+
+The Michigan Study, formally the “Trends in Morbidity, Mortality, and Cost of
+Hospitalizations Associated With Infectious Disease Sequelae of the Opioid Epidemic”, laid much of the groundwork for our work today; it was even the inspiration for our partner to reach out to us in the first place. Due to their work our partner and mentors knew what data we would need as well as what we need to focus on to be able advocate for the End the Syndemic program in Tennessee. Our methods have been almost solely inspired by theirs as well as our own goals for what we hope to accomplish in our analysis here.
+
+New York’s longitudinal study, according to the Center for Disease Control and Prevention, conducted over a span of 12 years, found that as a result of SEP establishment, 
+
+* HIV prevalence decreased from 50 percent to 17 percent
+
+* Hepatitis C infections decreased from 80 percent to 59 percent among HIV-negative intravenous drug users
+
+* And after a cost-effective analysis, SEPs would save the government $1,300 to $3,000 per client. 
+
+Additionally, Washington D.C.’s SEP clinics 
+
+* 70 percent decrease in new HIV cases among IDU
+
+* 120 HIV cases averted in two years
+
+As shown with the facts above, SEPs are cost efficient and they reduce the risk of disease transmission. 
+
+It is also worth noting that the placement of clinics plays a large role in their accessibility to different target populations. According to Welton et al., in urban areas, clinics should be placed within a 10-minute walk from someone’s home. In rural settings, this may not always be possible, so the National Harm Reduction Coalition proposed that clinics in rural areas should have flexible hours to accommodate different schedules and methods of travel, and they should seek feedback from the target population and the community that the clinic will be placed in. Furthermore, to maximize the benefits the clinic provides to its clients, the clinic should work in conjunction with local law enforcement, faith groups, and other community resource centers. 
+
+According to Syndemics and the Biosocial Conception of Health, the authors’ state that “Primary care providers should consider developing closer associations with community advocates and service workers to build healthy structural change (Bulled et al.). Establishing programs that aim to mitigate the impacts of a syndemic are described by the authors as “rarely take centre stage in public health because funding sources are described as “outcomes-oriented,”” having an “unfounded prioritisation of some diseases,” and most importantly, “efforts to build national health systems can face steep opposition,” which is a primary reason many of them are not in place. The “steep opposition” can be due in part to a lack of understanding about addiction, disease, transmission, and treatment options (Bulled et al.). 
+
+Opposition to syringe exchange programs takes form in different ways. As mentioned in an earlier presentation, one of the grandest goals of our project is to help end the stigma around these programs and addiction. Occasionally, local stigmas about addiction and syringe sharing programs are more prevalent than modern evidence about their effectiveness. According to Subeksha Sharma, author of The Needle Exchange Program Crisis, many opponents of the program fear that by providing needle exchange kits that communities may be enabling drug abuse. Moreover, stigma around addicts has inspired fear in constituents that by putting these clinics in public spaces may actually increase crime; nothing we could find suggested this was true though. This in turn regularly dissuades politicians from supporting the programs despite their benefits due to the damage it could cause to their careers. Even for politicians willing to support the project, federal support has been consistently unreliable in the past. While legal and financial aid has been offered it is often quite limited, or, as in the case with recent presidents, has had no follow through despite official promises of expanded aid. Local stigmas alongside the bloated, complex bureaucracy strangles support that could otherwise bolster the healthcare cause that syringe exchange programs aim to aid (Sharma).
+
+### Works Cited
+
+“Access to Clean Syringes.” Centers for Disease Control and Prevention, Centers for Disease Control and Prevention, 5 Aug. 2016, https://www.cdc.gov/policy/hst/hi5/cleansyringes/index.html. 
+
+Bulled, Nicola, et al. “Syndemics and the Biosocial Conception of Health.” ScienceDirect, The Lancet, 2017, https://doi.org/10.1016/S0140-6736(17)30003-X. 
+
+Sharma, Subeksha. “The Needle Exchange Program Crisis.” The Public Health Advocate, 2019, https://pha.berkeley.edu/2019/12/01/the-needle-exchange-program-crisis/. 
+
+Welton, Amy et al. “Optimal placement of syringe-exchange programs.” Journal of urban 
+
+health: bulletin of the New York Academy of Medicine vol. 81,2 (2004): 268-77. doi:10.1093/jurban/jth113
+
 
