@@ -141,16 +141,7 @@ The data being used by Syndemic is gathered from patient records from TN hospita
 |Tertiary_Payer_Class_Cd|The name or type of payer organization from which the hospital might third expect some payment for the bill. Many bills will lack a third payer; this field will then be blank. Ex: D : Medicaid M : Medicare|
 |National_Provider_Id|Provide the correct National Provider Identifier (NPI) number for the hospital that is associated with the type of services provided to the patient.|
 |Diag1:18|The ICD-10-CM code is describing the principal diagnosis (i.e., the condition chiefly responsible for the admission of the patient for care).|
-|Patient_Race_Ethnicity|Classified using 2 numbers. Patient’s race/ethnicity and hispanic or non-hispanic. Ex: ​​1 White or Caucasian
-       
-       2 Black or African American
-       …
-       1 Hispanic Origin 
-       2 Non-Hispanic Origin 
-       3 Hispanic Origin Unknown|
+|Patient_Race_Ethnicity|Classified using 2 numbers. Patient’s race/ethnicity and hispanic or non-hispanic. Ex: ​​1 White or Caucasian 2 Black or African American 1 Hispanic Origin 2 Non-Hispanic Origin 3 Hispanic Origin Unknown|
 |Age|Age of patient in years.|
-|TN_Res_Flag|Whether or not they are a Tennessee Resident.
-
-Y : Yes
-N : No|
+|TN_Res_Flag|Whether or not they are a Tennessee Resident. Y : Yes N : No|
 

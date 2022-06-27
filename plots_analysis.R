@@ -27,5 +27,6 @@ ggplot(data = zip, aes( x = reorder(Patient_Zip,-total) , y = total/100000000000
   theme(legend.position = "none")
 
 
+
   
   
