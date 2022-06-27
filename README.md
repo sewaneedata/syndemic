@@ -118,4 +118,85 @@ Welton, Amy et al. “Optimal placement of syringe-exchange programs.” Journal
 
 health: bulletin of the New York Academy of Medicine vol. 81,2 (2004): 268-77. doi:10.1093/jurban/jth113
 
+#  Data Description 
+The data being used by Syndemic is gathered from patient records from TN hospitals in 2019. Hospitals send patient discharge data to the TN Department of Health, and the TN Department of Health sells the data. 
+
+## Data Table
+--------------------------------------
+| Variable Name: | Variable Description:|
+--------------------------------------
+…1
+Patient Number
+File_Type
+Whether they are an Inpatient or Outpatient
+Data_Yr
+Year this data was collected
+Hospital_ID
+ID of Hospital
+Patient_Zip
+Zip Code of the patient
+Patient_Sex
+Patient Sex:
+
+F = Female
+M = Male
+U = Unknown
+
+
+Patient_Discharge_Status
+Patients' status when being discharged.
+
+Ex: 20 : Expired
+Rev_Cd1:23
+This code identifies a specific accommodation, ancillary service, or billing calculation. The individual
+revenue code indicates that a part of the total charge claimed is categorized under a specific
+revenue source.
+Tot_Chrg_by_Rev_Cd1:23
+Total Charges pertaining to the related revenue code for the current billing period as reflected by
+the statement covers period. Total Charges include both covered and non-covered charges.
+Total_Tot_Chrg
+Give the total for all the Total Charges by Revenue Code Fields for the bill. This total should include both covered and non-covered charges.
+Non_Cvrd_Chrg_by_Rev_Cd1:23
+
+
+This data is used to properly analyze and to obtain a more valid comparison of non-covered hospital charges by revenue code.
+ Total_Non_Cvrd_Chrg
+Give the total for all the Non-Covered charges for the bill.
+ Primary_Payer_Class_Cd
+The name or type of payer organization from which the hospital first expects some payment for the bill.
+
+Ex: D : Medicaid
+      M : Medicare
+ Secondary_Payer_Class_Cd
+The name or type of payer organization from which the hospital might second expect some
+payment for the bill.
+
+Ex: D : Medicaid
+      M : Medicare
+ Tertiary_Payer_Class_Cd
+
+
+The name or type of payer organization from which the hospital might third expect some payment for the bill. Many bills will lack a third payer; this field will then be blank.
+
+Ex: D : Medicaid
+      M : Medicare
+National_Provider_Id
+Provide the correct National Provider Identifier (NPI) number for the hospital that is associated with the type of services provided to the patient.
+ Diag1:18
+The ICD-10-CM code is describing
+the principal diagnosis (i.e., the condition chiefly responsible for the admission of the patient for care).
+ Patient_Race_Ethnicity
+Classified using 2 numbers. Patient’s race/ethnicity and hispanic or non-hispanic. Ex: ​​1 White or Caucasian
+       2 Black or African American
+       …
+       1 Hispanic Origin 
+       2 Non-Hispanic Origin 
+       3 Hispanic Origin Unknown
+Age
+Age of patient in years.
+TN_Res_Flag
+Whether or not they are a Tennessee Resident.
+
+Y : Yes
+N : No
 
