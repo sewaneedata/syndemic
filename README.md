@@ -122,9 +122,18 @@ health: bulletin of the New York Academy of Medicine vol. 81,2 (2004): 268-77. d
 The data being used by Syndemic is gathered from patient records from TN hospitals in 2019. Hospitals send patient discharge data to the TN Department of Health, and the TN Department of Health sells the data. 
 
 ## Data Table
---------------------------------------
 | Variable Name: | Variable Description:|
---------------------------------------
+|:---------------|:---------------------|
+|...1            | Patient Number       |
+|File Type       | Whether they are an inpatient or Outpatient|
+|...1            | File_Type            |
+|...1            | File_Type            |
+|...1            | File_Type            |
+|...1            | File_Type            |
+|...1            | File_Type            |
+|...1            | File_Type            |
+|...1            | File_Type            |
+|...1            | File_Type            |
 …1
 Patient Number
 File_Type
