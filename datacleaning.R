@@ -5,7 +5,9 @@ library(tidyverse)
 
 setwd("D:/DataLab/syndemic")
 codes <- read_csv("codes.csv")
-data<-read_csv("D:/DataLab/DataLab_2022/impdata.csv")
+#####################################################################
+# This data is already filtered for choosen column values!
+data<-read_csv("impdata.csv")
 #####################################################################
 # New Correct way of cleaning data-----------------------------------
 # Making all diagnosis into one column!
@@ -38,6 +40,25 @@ fidv<-unique(fidv)
 
 # Get person with ids that we got and care about
 cleands<-data %>% filter( ...1 %in% fidv)
+write_csv(cleands, "masterdata.csv")
+df<-read.csv("masterdata.csv")
+df<-df %>% select(-starts_with("HCPC_Rate"),
+                  -X....1.,
+                  -Tot_Charges_Summed,
+                  -Tot_Charges_Analysis,
+                  -Tot_Charges_Recorded,
+                  -Obs_Unit_Flag,
+                  -CostWt,
+                  -starts_with("Proc"),
+                  -Bill_Number,
+                  -Record_Seq_Num,
+                  -Form_Type,
+                  -Accident_Code,
+                  -Admit_Diag_Cd
+                  )
+write_csv(df, "mdata.csv")
+
+paste0(colnames(df),collapse = " ")
 
 # Possibly useful code but not the most important--------------------
 #####################################################################
