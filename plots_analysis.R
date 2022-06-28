@@ -5,7 +5,8 @@ library(tidyverse)
 library(ggthemes)
 
 setwd("D:/DataLab/syndemic")
-data<-read_csv("mdata.csv")
+data<-read_csv("m_data.csv")
+
 
 # First decent graph hopefully
 zip<-data %>% filter(TN_Res_Flag == "Y") %>% 

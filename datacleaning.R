@@ -2,6 +2,8 @@
 # June 23rd 2022 | Start of exploration and cleaning!
 #####################################################################
 library(tidyverse)
+library(stringr)
+library(gsheet)
 
 setwd("D:/DataLab/syndemic")
 codes <- read_csv("codes.csv")
@@ -23,7 +25,12 @@ swdf<-codes %>% filter(astrid)
 swv<-pull(swdf,code)
 
 # Look for any person id that has codes that start with any of our start with patterns
-swfinal<-trainpl %>% filter(substr(value,1,3) %in% swv )
+swfinal<-trainpl %>%
+  filter(substr(value,1,3) %in% swv )
+swfinal<-swfinal %>% filter( !(substr(value,1,1) == "T" & (substr(value,6,6)=="5"|substr(value,6,6)=="6" )))
+# This last filter is for the special T codes where the second to last character
+# can't be a 5 or 6. I generalized and saw that most codes where 7 characters long
+# so I used substr to look at the 6th character and made sure it didn't equal
 
 # Get codes that are fixed and we only want them to match that specific code
 fixeddf<-codes %>% filter(!astrid)
@@ -40,10 +47,9 @@ fidv<-unique(fidv)
 
 # Get person with ids that we got and care about
 cleands<-data %>% filter( ...1 %in% fidv)
-write_csv(cleands, "masterdata.csv")
-df<-read.csv("masterdata.csv")
-df<-df %>% select(-starts_with("HCPC_Rate"),
-                  -X....1.,
+
+# Clean more, get rid of some more columns
+cleands<-cleands %>% select(-starts_with("HCPC_Rate"),
                   -Tot_Charges_Summed,
                   -Tot_Charges_Analysis,
                   -Tot_Charges_Recorded,
@@ -56,17 +62,24 @@ df<-df %>% select(-starts_with("HCPC_Rate"),
                   -Accident_Code,
                   -Admit_Diag_Cd
                   )
-write_csv(df, "mdata.csv")
 
-paste0(colnames(df),collapse = " ")
+write_csv(cleands, "m_data.csv")
+
+# Getting rid of some codes that arent helpful.
+
 
 # Possibly useful code but not the most important--------------------
 #####################################################################
 # Reading in doc of IDC10codes and creating codes csv----------------
-# icd<-read_csv("codes-Sheet1.csv", col_names = FALSE)
-# icd<-icd %>% mutate(code = substr(icd$X1,1 , 7 )) %>%mutate( astrid = ifelse(str_detect(icd$X1, "[*]"),TRUE,FALSE))
+# icd<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1hrniE4MIjZKVABg2DMR_tnKOt-SuIdPXYkzszWjQqbA/edit?usp=sharing")
+
+# Making a column with codes.
+# Noting that codes with astrid needs to be searched as start with, not fixed code. 
+# icd<-icd %>% mutate(code = substr(icd$diagnosis,1 , 7 )) %>%mutate( astrid = ifelse(str_detect(icd$diagnosis, "[*]"),TRUE,FALSE))
+
+# Getting rid of astrid or, period from codes. 
 # icd$code <- icd$code %>% str_replace_all("[.]","") %>% str_replace_all("[*]","")
-# Only run once
+# Only run once, making this into csv for later use
 # write_csv(icd, "codes.csv")
 #####################################################################
 # Data set Formatting ----------------------------------------------- 
