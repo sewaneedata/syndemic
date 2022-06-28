@@ -21,28 +21,24 @@ trainpl<-data %>%
 trainpl<-trainpl %>% pivot_longer(starts_with("Diag"))
 
 # Get codes that tell us with what it should start with
-swdf<-codes %>% filter(astrid)
-swv<-pull(swdf,code)
+swv<-codes %>% filter(astrid) %>% pull(code)
 
 # Look for any person id that has codes that start with any of our start with patterns
 swfinal<-trainpl %>%
-  filter(substr(value,1,3) %in% swv )
-swfinal<-swfinal %>% filter( !(substr(value,1,1) == "T" & (substr(value,6,6)=="5"|substr(value,6,6)=="6" )))
+  filter(substr(value,1,3) %in% swv )%>%
+  filter( !(substr(value,1,1) == "T" & (substr(value,nchar(value)-1,nchar(value)-1)=="5"|substr(value,nchar(value)-1,nchar(value)-1)=="6" )))
 # This last filter is for the special T codes where the second to last character
 # can't be a 5 or 6. I generalized and saw that most codes where 7 characters long
 # so I used substr to look at the 6th character and made sure it didn't equal
 
 # Get codes that are fixed and we only want them to match that specific code
-fixeddf<-codes %>% filter(!astrid)
-fixedv<-pull(fixeddf,code)
+fixedv<-codes %>% filter(!astrid) %>% pull(code)
 
 # Look for any person id that has code that matches any of our fixed codes
 fixedfinal<-trainpl %>% filter(value %in% fixedv)
 
 # Make the patient ids in vectors and join them
-swidv<-pull(swfinal,...1)
-ffidv<-pull(fixedfinal,...1)
-fidv<-c(ffidv, swidv)
+fidv<-c(pull(fixedfinal,...1), pull(swfinal,...1))
 fidv<-unique(fidv)
 
 # Get person with ids that we got and care about
@@ -63,20 +59,79 @@ cleands<-cleands %>% select(-starts_with("HCPC_Rate"),
                   -Admit_Diag_Cd
                   )
 
-write_csv(cleands, "m_data.csv")
+write_csv(cleands,"m_data.csv")
 
-# Getting rid of some codes that arent helpful.
+# Add boolean value for SUD------------------------------------------
+syndata<-read_csv("m_data.csv")
 
+synpl<-syndata %>% 
+  select( ...1,
+          Diag1:Diag18
+  )
+synpl<-synpl %>% pivot_longer(starts_with("Diag"))
+# Vector of sud codes that we need to find starts with
+sudcode_a<-codes %>% filter(sud) %>% filter(astrid) %>% pull(code)
+# Vector of sud codes that we need to find fixed
+sudcode_f<-codes %>% filter(sud) %>% filter(!astrid) %>% pull(code)
+# pull ids that match one of these
+sudids<- synpl %>% filter(value %in% sudcode_f | substr(value,1,3) %in% sudcode_a) %>%
+  filter( !(substr(value,1,1) == "T" & (substr(value,nchar(value)-1,nchar(value)-1)=="5"|substr(value,nchar(value)-1,nchar(value)-1)=="6" ))) %>% 
+  pull(...1) %>% unique()
+# Add column that says true if id is in this vector
+syndata<-syndata %>% mutate(sud = ifelse(...1 %in% sudids, TRUE, FALSE))
 
+# Add boolean value for ENDO-----------------------------------------
+# Vector of sendo codes that we need to find fixed
+endocode_f<-codes %>% filter(endo) %>% pull(code)
+# pull ids that match one of these
+endoids<- synpl %>% filter(value %in% endocode_f) %>%
+  pull(...1) %>% unique()
+# Add column that says true if id is in this vector
+syndata<-syndata %>% mutate(endo = ifelse(...1 %in% endoids, TRUE, FALSE))
+
+# Add boolean value for SSTVI----------------------------------------
+# Vector of sstvi codes that we need to find starts with
+sstcode_a<-codes %>% filter(sstvi) %>% filter(astrid) %>% pull(code)
+# Vector of sstvi codes that we need to find fixed
+sstcode_f<-codes %>% filter(sstvi) %>% filter(!astrid) %>% pull(code)
+# pull ids that match one of these
+sstids<- synpl %>% filter(value %in% sstcode_f | substr(value,1,3) %in% sstcode_a) %>%
+  pull(...1) %>% unique()
+# Add column that says true if id is in this vector
+syndata<-syndata %>% mutate(sstvi = ifelse(...1 %in% sstids, TRUE, FALSE))
+
+# Add boolean values for Ost-----------------------------------------
+# Vector of ost codes that we need to find starts with
+ostcode_a<-codes %>% filter(osteomyelitis) %>% filter(astrid) %>% pull(code)
+# Vector of ost codes that we need to find fixed
+ostcode_f<-codes %>% filter(osteomyelitis) %>% filter(!astrid) %>% pull(code)
+# pull ids that match one of these
+ostids<- synpl %>% filter(value %in% ostcode_f | substr(value,1,3) %in% ostcode_a) %>%
+  pull(...1) %>% unique()
+# Add column that says true if id is in this vector
+syndata<-syndata %>% mutate(ost = ifelse(...1 %in% ostids, TRUE, FALSE))
+
+# Add boolean value for Sepsis---------------------------------------
+# Vector of sepsis codes that we need to find starts with
+sepcode_a<-codes %>% filter(sepsis) %>% filter(astrid) %>% pull(code)
+# Vector of sepsis codes that we need to find fixed
+sepcode_f<-codes %>% filter(sepsis) %>% filter(!astrid) %>% pull(code)
+# pull ids that match one of these
+sepids<- synpl %>% filter(value %in% sepcode_f | substr(value,1,3) %in% sepcode_a) %>%
+  pull(...1) %>% unique()
+# Add column that says true if id is in this vector
+syndata<-syndata %>% mutate(sepsis = ifelse(...1 %in% sepids, TRUE, FALSE))
+
+write_csv(syndata, "masterdata.csv")
 # Possibly useful code but not the most important--------------------
 #####################################################################
 # Reading in doc of IDC10codes and creating codes csv----------------
 # icd<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1hrniE4MIjZKVABg2DMR_tnKOt-SuIdPXYkzszWjQqbA/edit?usp=sharing")
-
+# 
 # Making a column with codes.
 # Noting that codes with astrid needs to be searched as start with, not fixed code. 
 # icd<-icd %>% mutate(code = substr(icd$diagnosis,1 , 7 )) %>%mutate( astrid = ifelse(str_detect(icd$diagnosis, "[*]"),TRUE,FALSE))
-
+# 
 # Getting rid of astrid or, period from codes. 
 # icd$code <- icd$code %>% str_replace_all("[.]","") %>% str_replace_all("[*]","")
 # Only run once, making this into csv for later use
