@@ -4,14 +4,13 @@ library(ggVennDiagram)
 library(forcats)
 
 md <- read.csv('masterdata.csv')
-codes <- read.csv('codes.csv')
-######################## Primary Payer & Total Costs Paid Graph ----
+######################## Primary Payer (top 5) & Total Costs Paid Graph ----
 
 #Sets up an object that groups by primary payer, 
 #sums the total costs each payer paid for syndemic patients,
 #only saves the top 5,
 #and then adds a new column, gov, for if it was funded by the government or not
-md2 <- md %>% 
+md_top_payers <- md %>% 
   filter(sud & endo | sstvi) %>% 
   group_by(Primary_Payer_Class_Cd) %>%
   summarise(total = sum(Total_Tot_Chrg)) %>% 
@@ -20,7 +19,7 @@ md2 <- md %>%
   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('M','K','J'), TRUE, FALSE))
 
 #Renames the primary payers to their common name
-md2$Primary_Payer_Class_Cd <- fct_recode(md2$Primary_Payer_Class_Cd,
+md_top_payers$Primary_Payer_Class_Cd <- fct_recode(md_top_payers$Primary_Payer_Class_Cd,
              'Medicare' = 'M',
              'Medicare Advantage' = 'K',
              'Self-Pay' = 'P',
@@ -28,7 +27,7 @@ md2$Primary_Payer_Class_Cd <- fct_recode(md2$Primary_Payer_Class_Cd,
              'Blue Cross/Blue Shield' = 'B')
 
 #Plots the top 5 primary payers by their costs paid for syndemic patients
-ggplot(data = md2, 
+ggplot(data = md_top_payers, 
        aes(y = total/100000000000, 
            x = reorder(Primary_Payer_Class_Cd, -total), 
            fill = gov ) ) +
@@ -38,7 +37,7 @@ ggplot(data = md2,
        x = 'Primary Payer',
        y = 'Cost Paid (in billions of US dollars)',
        subtitle = 'In 2019') +
-  scale_fill_manual(md2, values = c('red', 'black'), 
+  scale_fill_manual(md_top_payers, values = c('red', 'black'), 
                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
                     name = 'Color Legend:') +
   theme(legend.position = 'bottom') +
@@ -68,7 +67,26 @@ ggplot(data = md_big_gov,
        x = 'Primary Payer',
        y = 'Cost Paid (in billions of US dollars)',
        subtitle = 'In 2019') +
-  scale_fill_manual(md2, values = c('black', 'red')) +
+  scale_fill_manual(md_top_payers, values = c('black', 'red')) +
   theme(legend.position = '0')
 
-########################
+######################## Venn Diagram of SUDs Patients & Syndemic-Related Illnesses Patients
+
+#Creates a list of SUDs & ENDO or SSTVI for the ggvenn package to read
+syndemic_list <- 
+  list('SUDs' = which(md$sud), 
+       'SSTVIs or Endocarditis' = which(md$endo | md$sstvi))
+
+#Creates a venn diagram showing overlap in SUDS and syndemic related ICD-10s
+ggVennDiagram(syndemic_list,
+              label_size = 4,
+              label_alpha = 0.3,
+              label = c('count')) +
+  theme(legend.position = '0') +
+  labs(caption = 'End the Syndemic | DataLab 2022',
+       title = 'Hospitalizations overlap for substance use disorder (SUDs) and infectious sequela of interest',
+       subtitle = 'TN Hospitals 2019') +
+  scale_fill_distiller(palette = "RdBu", direction = 1) +
+  scale_color_brewer(palette = "Set1")
+
+########################  
