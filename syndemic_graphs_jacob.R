@@ -86,7 +86,7 @@ ggVennDiagram(syndemic_list,
   labs(caption = 'End the Syndemic | DataLab 2022',
        title = 'Hospitalizations overlap for substance use disorder (SUDs) and infectious sequela of interest',
        subtitle = 'TN Hospitals 2019') +
-  scale_fill_distiller(palette = "Set3", direction = 1) +
+  scale_fill_distiller(palette = "OrRd", direction = 1) +
   scale_color_brewer(palette = "Set2")
 
 ######################## Trends in hospitalization incidence rates by age group ----
@@ -98,9 +98,9 @@ ggplot(data = md %>%
                                                   ifelse(Age %in% 35:44, '35-44',
                                                          ifelse(Age %in% 45:54, '45-54',
                                                                 ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
-         mutate(quarter = ifelse(month %in% c('Jan, Feb, Mar'), Q1,
-                                 ifelse(month %in% c('Jan, Feb, Mar'), Q2,
-                                        ifelse(month %in% c('Jan, Feb, Mar'), Q3, Q4)))),
+         mutate(quarter = ifelse(creation_dt %in% 1:3, Q1,
+                                 ifelse(creation_dt %in% 4:6, Q2,
+                                        ifelse(creation_dt %in% 7:9, Q3, Q4)))),
       aes(x = quarter,
           color = Age)) +
   geom_line()
