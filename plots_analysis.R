@@ -5,7 +5,7 @@ library(tidyverse)
 library(ggthemes)
 
 setwd("D:/DataLab/syndemic")
-data<-read_csv("m_data.csv")
+data<-read_csv("masterdata.csv")
 code<-read_csv("codes.csv")
 
 # First decent graph hopefully
@@ -27,5 +27,6 @@ ggplot(data = zip, aes( x = reorder(Patient_Zip,-total) , y = total/100000000000
   ylab("Total (In Billions)") +
   theme(legend.position = "none")
 
-  
+#
+data %>% filter(sud&sstvi) %>% tally()
   
