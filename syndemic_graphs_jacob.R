@@ -53,8 +53,8 @@ md_big_gov <- md %>%
   summarise(total = sum(Total_Tot_Chrg)) %>% 
   arrange(desc(total)) %>% 
   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
-                     'Government Funded', 
-                     'Privately Funded'))
+                      'Government Funded', 
+                      'Privately Funded'))
 
 #Plots government vs private total funding for syndemic patients
 ggplot(data = md_big_gov, 
@@ -86,7 +86,23 @@ ggVennDiagram(syndemic_list,
   labs(caption = 'End the Syndemic | DataLab 2022',
        title = 'Hospitalizations overlap for substance use disorder (SUDs) and infectious sequela of interest',
        subtitle = 'TN Hospitals 2019') +
-  scale_fill_distiller(palette = "RdBu", direction = 1) +
-  scale_color_brewer(palette = "Set1")
+  scale_fill_distiller(palette = "Set3", direction = 1) +
+  scale_color_brewer(palette = "Set2")
 
-########################  
+######################## Trends in hospitalization incidence rates by age group ----
+
+ggplot(data = md %>% 
+         mutate(Age_Groups = ifelse(Age %in% 0:17, '0-17', 
+                                    ifelse(Age %in% 18:24, '18-24',
+                                           ifelse(Age %in% 25:34, '25-34',
+                                                  ifelse(Age %in% 35:44, '35-44',
+                                                         ifelse(Age %in% 45:54, '45-54',
+                                                                ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
+         mutate(quarter = ifelse(month %in% c('Jan, Feb, Mar'), Q1,
+                                 ifelse(month %in% c('Jan, Feb, Mar'), Q2,
+                                        ifelse(month %in% c('Jan, Feb, Mar'), Q3, Q4)))),
+      aes(x = quarter,
+          color = Age)) +
+  geom_line()
+
+######################## Trends in hospitalization costs (in dollars) ----
