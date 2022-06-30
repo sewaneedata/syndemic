@@ -2,8 +2,9 @@
 library(tidyverse)
 library(ggVennDiagram)
 library(forcats)
+library(lubridate)
 
-md <- read.csv('masterdata.csv')
+md <- read_csv('masterdata.csv')
 ######################## Primary Payer (top 5) & Total Costs Paid Graph ----
 
 #Sets up an object that groups by primary payer, 
@@ -33,10 +34,10 @@ ggplot(data = md_top_payers,
            fill = gov ) ) +
   geom_col() +
   labs(title = 'Costs Paid by Top Payers',
+       subtitle = 'TN Hospitals 2019',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Primary Payer',
-       y = 'Cost Paid (in billions of US dollars)',
-       subtitle = 'In 2019') +
+       y = 'Cost Paid (in billions of US dollars)') +
   scale_fill_manual(md_top_payers, values = c('red', 'black'), 
                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
                     name = 'Color Legend:') +
@@ -64,9 +65,9 @@ ggplot(data = md_big_gov,
   geom_col() +
   labs(title = 'Costs Paid by the Government vs Commercial Providers',
        caption = 'End the Syndemic | DataLab 2022',
+       subtitle = 'TN Hospitals 2019',
        x = 'Primary Payer',
-       y = 'Cost Paid (in billions of US dollars)',
-       subtitle = 'In 2019') +
+       y = 'Cost Paid (in billions of US dollars)') +
   scale_fill_manual(md_top_payers, values = c('black', 'red')) +
   theme(legend.position = '0')
 
@@ -83,26 +84,95 @@ ggVennDiagram(syndemic_list,
               label_alpha = 0.3,
               label = c('count')) +
   theme(legend.position = '0') +
-  labs(caption = 'End the Syndemic | DataLab 2022',
-       title = 'Hospitalizations overlap for substance use disorder (SUDs) and infectious sequela of interest',
-       subtitle = 'TN Hospitals 2019') +
+  labs(title = 'Hospitalizations overlap for substance use disorder (SUDs) and infectious sequela of interest',
+       subtitle = 'TN Hospitals 2019',
+       caption = 'End the Syndemic | DataLab 2022') +
   scale_fill_distiller(palette = "OrRd", direction = 1) +
   scale_color_brewer(palette = "Set2")
 
 ######################## Trends in hospitalization incidence rates by age group ----
 
-ggplot(data = md %>% 
-         mutate(Age_Groups = ifelse(Age %in% 0:17, '0-17', 
-                                    ifelse(Age %in% 18:24, '18-24',
-                                           ifelse(Age %in% 25:34, '25-34',
-                                                  ifelse(Age %in% 35:44, '35-44',
-                                                         ifelse(Age %in% 45:54, '45-54',
-                                                                ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
-         mutate(quarter = ifelse(creation_dt %in% 1:3, Q1,
-                                 ifelse(creation_dt %in% 4:6, Q2,
-                                        ifelse(creation_dt %in% 7:9, Q3, Q4)))),
+#Reads in the private health info version of our dataset
+md_phi <- read.csv('masterdataphi.csv')
+
+#Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
+md_phi_age_groups <- 
+  md_phi %>% 
+  mutate(creation_dt = mdy(creation_dt)) %>% 
+  mutate(months = month(creation_dt)) %>% 
+  mutate(Age_Groups = ifelse(Age %in% 0:17, '0-17', 
+                             ifelse(Age %in% 18:24, '18-24',
+                                    ifelse(Age %in% 25:34, '25-34',
+                                           ifelse(Age %in% 35:44, '35-44',
+                                                  ifelse(Age %in% 45:54, '45-54',
+                                                         ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
+  mutate(quarter = ifelse(months %in% 1:3, 1,
+                          ifelse(months %in% 4:6, 2,
+                                 ifelse(months %in% 7:9, 3, 4)))) 
+
+
+#Plots SUDS and endo
+ggplot(data = md_phi_age_groups%>% 
+         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&endo) %>% 
+         group_by(Age_Groups, quarter) %>% 
+         tally(),
       aes(x = quarter,
-          color = Age)) +
-  geom_line()
+          y = n,
+          color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Abuse and Endocarditis',
+       subtitle = 'TN Hospitals 2019',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients')
+
+#Plots SUDS and osteo
+ggplot(data = md_phi_age_groups%>% 
+         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&ost) %>% 
+         group_by(Age_Groups, quarter) %>% 
+         tally(),
+       aes(x = quarter,
+           y = n,
+           color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Abuse and Ostemyelitis',
+       subtitle = 'TN Hospitals 2019',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients')
+
+#Plots SUDS and sepsis
+ggplot(data = md_phi_age_groups%>% 
+         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&sepsis) %>% 
+         group_by(Age_Groups, quarter) %>% 
+         tally(),
+       aes(x = quarter,
+           y = n,
+           color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Abuse and Sepsis',
+       subtitle = 'TN Hospitals 2019',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients')
+
+#Plots SUDS and sstvi
+ggplot(data = md_phi_age_groups%>% 
+         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&sstvi) %>% 
+         group_by(Age_Groups, quarter) %>% 
+         tally(),
+       aes(x = quarter,
+           y = n,
+           color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs',
+       subtitle = 'TN Hospitals 2019',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients')
 
 ######################## Trends in hospitalization costs (in dollars) ----
