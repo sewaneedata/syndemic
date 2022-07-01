@@ -33,10 +33,10 @@ ggplot(data = md_top_payers,
            x = reorder(Primary_Payer_Class_Cd, -total), 
            fill = gov ) ) +
   geom_col() +
-  labs(title = 'Costs Paid by Top Payers',
-       subtitle = 'TN Hospitals 2019',
+  labs(title = 'Total Costs Covered by Top 5 Healthcare Providers',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Primary Payer',
+       x = 'Primary Provider',
        y = 'Cost Paid (in billions of US dollars)') +
   scale_fill_manual(md_top_payers, values = c('royalblue', 'tomato'), 
                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
@@ -63,9 +63,9 @@ ggplot(data = md_big_gov,
            x = gov, 
            fill = gov ) ) +
   geom_col() +
-  labs(title = 'Costs Paid by the Government vs Commercial Providers',
+  labs(title = 'Total Costs Paid by Government and Private Providers',
        caption = 'End the Syndemic | DataLab 2022',
-       subtitle = 'TN Hospitals 2019',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        x = 'Primary Payer',
        y = 'Cost Paid (in billions of US dollars)') +
   scale_fill_manual(md_top_payers, values = c('tomato', 'royalblue')) +
@@ -87,8 +87,8 @@ ggVennDiagram(syndemic_list,
               label_alpha = 0.3,
               label = c('count')) +
   theme(legend.position = '0') +
-  labs(title = 'Hospitalizations overlap for substance use disorder (SUDs) and infectious sequela of interest',
-       subtitle = 'TN Hospitals 2019',
+  labs(title = 'Hospitalization overlap for substance use disorder (SUDs) and infectious sequela of interest',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022') +
   scale_fill_distiller(palette = "RdBu", direction = 1) +
   scale_color_brewer(palette = "Set2")
@@ -125,7 +125,7 @@ ggplot(data = md_phi_jacob %>%
   geom_point() +
   geom_line() +
   labs(title = 'Trends in Hospitalization for Substance Abuse and Endocarditis',
-       subtitle = 'TN Hospitals 2019',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients')
@@ -141,7 +141,7 @@ ggplot(data = md_phi_jacob %>%
   geom_point() +
   geom_line() +
   labs(title = 'Trends in Hospitalization for Substance Abuse and Ostemyelitis',
-       subtitle = 'TN Hospitals 2019',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients')
@@ -157,7 +157,7 @@ ggplot(data = md_phi_jacob%>%
   geom_point() +
   geom_line() +
   labs(title = 'Trends in Hospitalization for Substance Abuse and Sepsis',
-       subtitle = 'TN Hospitals 2019',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients')
@@ -173,7 +173,7 @@ ggplot(data = md_phi_jacob %>%
   geom_point() +
   geom_line() +
   labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs',
-       subtitle = 'TN Hospitals 2019',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients')
@@ -197,7 +197,7 @@ ggplot(data = md_phi_jacob %>%
            fill = gov)) +
   geom_col(position = 'dodge') +   
   labs(title = 'Trends in Costs for Substance Abuse and Endocarditis',
-                      subtitle = 'TN Hospitals 2019',
+                      subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
@@ -212,7 +212,7 @@ ggplot(data = md_phi_jacob %>%
            fill = gov)) +
   geom_col(position = 'dodge') +
   labs(title = 'Trends in Costs for Substance Abuse and Osteomyelitis',
-                      subtitle = 'TN Hospitals 2019',
+                      subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
@@ -227,7 +227,7 @@ ggplot(data = md_phi_jacob %>%
            fill = gov)) +
   geom_col(position = 'dodge') +
   labs(title = 'Trends in Costs for Substance Abuse and Sepsis',
-                      subtitle = 'TN Hospitals 2019',
+                      subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
@@ -243,10 +243,11 @@ ggplot(data = md_phi_jacob %>%
            fill = gov)) +
   geom_col(position = 'dodge') +
   labs(title = 'Trends in Costs for Substance Abuse and all SSTVIs',
-                      subtitle = 'TN Hospitals 2019',
+                      subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom')
   
+########################
