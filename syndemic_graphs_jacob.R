@@ -90,7 +90,11 @@ ggVennDiagram(syndemic_list,
   labs(title = 'Hospitalization overlap for substance use disorder (SUDs) and infectious sequela of interest',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022') +
-  scale_fill_distiller(palette = "RdBu", direction = 1) +
+  scale_color_manual(values = c('black','black')) +
+  scale_fill_gradientn(colors = c('red', 'blue', 'yellow', 'pink', 'green'))
+  
+  
+  scale_fill_distiller(palette = 'Set2', direction = 1) +
   scale_color_brewer(palette = "Set2")
 
 ######################## Trends in hospitalization incidence rates by age group ----
