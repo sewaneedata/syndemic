@@ -15,12 +15,12 @@ md<-full_join(zipid,md,by = "...1") %>% filter(state == "TN")
 #only saves the top 5,
 #and then adds a new column, gov, for if it was funded by the government or not
 md_top_payers <- md %>% 
-  filter(sud & endo | sstvi) %>% 
+  filter(sud, endo | sstvi) %>% 
   group_by(Primary_Payer_Class_Cd) %>%
   summarise(total = sum(Total_Tot_Chrg)) %>% 
   arrange(desc(total)) %>% 
   head(5) %>% 
-  mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('M','K','J'), TRUE, FALSE))
+  mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('M','K','J', '8'), TRUE, FALSE))
 
 #Renames the primary payers to their common name
 md_top_payers$Primary_Payer_Class_Cd <- fct_recode(md_top_payers$Primary_Payer_Class_Cd,
@@ -28,11 +28,11 @@ md_top_payers$Primary_Payer_Class_Cd <- fct_recode(md_top_payers$Primary_Payer_C
              'Medicare Advantage' = 'K',
              'Self-Pay' = 'P',
              'Blue Care' = 'J',
-             'Blue Cross/Blue Shield' = 'B')
+             'Americhoice' = '8')
 
 #Plots the top 5 primary payers by their costs paid for syndemic patients
 ggplot(data = md_top_payers, 
-       aes(y = total/100000000000, 
+       aes(y = total/100000000, 
            x = reorder(Primary_Payer_Class_Cd, -total), 
            fill = gov ) ) +
   geom_col() +
@@ -40,8 +40,8 @@ ggplot(data = md_top_payers,
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Primary Provider',
-       y = 'Cost Paid (in billions of US dollars)') +
-  scale_fill_manual(md_top_payers, values = c('royalblue', 'tomato'), 
+       y = 'Cost Paid (in millions of US dollars)') +
+  scale_fill_manual(md_top_payers, values = c('#1B365D', '#C11701'), 
                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
                     name = 'Color Legend:') +
   theme(legend.position = 'bottom') +
@@ -52,7 +52,7 @@ ggplot(data = md_top_payers,
 #creates a object that groups by primary payer, summaries total paid by provider,
 #and then adds gov columns to determine if government funded or privately funded
 md_big_gov <- md %>% 
-  filter(sud & endo | sstvi) %>% 
+  filter(sud, endo | sstvi) %>% 
   group_by(Primary_Payer_Class_Cd) %>% 
   summarise(total = sum(Total_Tot_Chrg)) %>% 
   arrange(desc(total)) %>% 
@@ -62,7 +62,7 @@ md_big_gov <- md %>%
 
 #Plots government vs private total funding for syndemic patients
 ggplot(data = md_big_gov, 
-       aes(y = total/100000000000, 
+       aes(y = total/100000000, 
            x = gov, 
            fill = gov ) ) +
   geom_col() +
@@ -70,8 +70,8 @@ ggplot(data = md_big_gov,
        caption = 'End the Syndemic | DataLab 2022',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        x = 'Primary Payer',
-       y = 'Cost Paid (in billions of US dollars)') +
-  scale_fill_manual(md_top_payers, values = c('tomato', 'royalblue')) +
+       y = 'Cost Paid (in millions of US dollars)') +
+  scale_fill_manual(md_top_payers, values = c('#C11701', '#1B365D')) +
   theme(legend.position = '0')
 
 ######################## Venn Diagram of SUDs Patients & Syndemic-Related Illnesses Patients ----
@@ -80,9 +80,6 @@ ggplot(data = md_big_gov,
 syndemic_list <- 
   list('SUDs' = which(md$sud), 
        'SSTVIs or Endocarditis' = which(md$endo | md$sstvi))
-
-#Creates palette we will use
-mycols <- colors()[c(8, 5, 30, 53, 118, 72)]
 
 #Creates a venn diagram showing overlap in SUDS and syndemic related ICD-10s
 ggVennDiagram(syndemic_list,
@@ -94,11 +91,7 @@ ggVennDiagram(syndemic_list,
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022') +
   scale_color_manual(values = c('black','black')) +
-  scale_fill_gradientn(colors = c('red', 'blue', 'yellow', 'pink', 'green'))
-  
-  
-  scale_fill_distiller(palette = 'Set2', direction = 1) +
-  scale_color_brewer(palette = "Set2")
+  scale_fill_gradientn(colors = c('#555555', '#C11701', '#555555', '#1B365D'))
 
 ######################## Trends in hospitalization incidence rates by age group ----
 
@@ -140,7 +133,8 @@ ggplot(data = md_phi_jacob %>%
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
-       y = 'Total Patients')
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and osteo
 ggplot(data = md_phi_jacob %>% 
@@ -156,7 +150,8 @@ ggplot(data = md_phi_jacob %>%
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
-       y = 'Total Patients')
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and sepsis
 ggplot(data = md_phi_jacob%>% 
@@ -172,7 +167,8 @@ ggplot(data = md_phi_jacob%>%
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
-       y = 'Total Patients')
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and sstvi
 ggplot(data = md_phi_jacob %>% 
@@ -188,7 +184,8 @@ ggplot(data = md_phi_jacob %>%
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
-       y = 'Total Patients')
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 ######################## Trends in hospitalization costs (in dollars) ----
 
@@ -214,7 +211,8 @@ ggplot(data = md_phi_jacob %>%
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom') +
+  scale_fill_manual(values = c('#C11701', '#1B365D'))
 
 #Plots SUDS and ost
 ggplot(data = md_phi_jacob %>% 
@@ -229,7 +227,8 @@ ggplot(data = md_phi_jacob %>%
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom') +
+  scale_fill_manual(values = c('#C11701', '#1B365D'))
 
 #Plots SUDS and sepsis
 ggplot(data = md_phi_jacob %>% 
@@ -244,7 +243,8 @@ ggplot(data = md_phi_jacob %>%
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom') +
+  scale_fill_manual(values = c('#C11701', '#1B365D'))
 
 
 #Plots SUDS and SSTVIs
@@ -260,6 +260,8 @@ ggplot(data = md_phi_jacob %>%
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
-  theme(legend.position = 'bottom')
+  theme(legend.position = 'bottom') +
+  scale_fill_manual(values = c('#C11701', '#1B365D'))
   
 ########################
+
