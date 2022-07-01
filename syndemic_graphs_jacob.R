@@ -4,7 +4,10 @@ library(ggVennDiagram)
 library(forcats)
 library(lubridate)
 
-md <- read_csv('masterdata.csv') %>% filter(TN_Res_Flag == 'Y')
+md <- read_csv('masterdata.csv')
+zipid<-read_csv("countybyid.csv")
+md<-full_join(zipid,md,by = "...1") %>% filter(state == "TN")
+
 ######################## Primary Payer (top 5) & Total Costs Paid Graph ----
 
 #Sets up an object that groups by primary payer, 
@@ -100,7 +103,12 @@ ggVennDiagram(syndemic_list,
 ######################## Trends in hospitalization incidence rates by age group ----
 
 #Reads in the private health info version of our dataset
-md_phi <- read.csv('masterdataphi.csv') %>% filter(TN_Res_Flag == 'Y')
+md_phi <- read.csv('masterdataphi.csv')
+zips<-read_csv("zip_code_database.csv")
+zips<-zips%>% select(zip,state,county)
+zips<-zips %>% rename(Patient_Zip = zip)
+d<-full_join(md_phi,zips, by = "Patient_Zip")
+md_phi<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state == "TN")
 
 #Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
 md_phi_jacob <- 
