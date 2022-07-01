@@ -4,7 +4,7 @@ library(ggVennDiagram)
 library(forcats)
 library(lubridate)
 
-md <- read_csv('masterdata.csv')
+md <- read_csv('masterdata.csv') %>% filter(TN_Res_Flag == 'Y')
 ######################## Primary Payer (top 5) & Total Costs Paid Graph ----
 
 #Sets up an object that groups by primary payer, 
@@ -100,7 +100,7 @@ ggVennDiagram(syndemic_list,
 ######################## Trends in hospitalization incidence rates by age group ----
 
 #Reads in the private health info version of our dataset
-md_phi <- read.csv('masterdataphi.csv')
+md_phi <- read.csv('masterdataphi.csv') %>% filter(TN_Res_Flag == 'Y')
 
 #Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
 md_phi_jacob <- 
