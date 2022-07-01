@@ -71,7 +71,7 @@ ggplot(data = md_big_gov,
   scale_fill_manual(md_top_payers, values = c('tomato', 'royalblue')) +
   theme(legend.position = '0')
 
-######################## Venn Diagram of SUDs Patients & Syndemic-Related Illnesses Patients
+######################## Venn Diagram of SUDs Patients & Syndemic-Related Illnesses Patients ----
 
 #Creates a list of SUDs & ENDO or SSTVI for the ggvenn package to read
 syndemic_list <- 
