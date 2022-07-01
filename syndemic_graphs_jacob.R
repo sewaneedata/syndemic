@@ -4,7 +4,7 @@ library(ggVennDiagram)
 library(forcats)
 library(lubridate)
 
-md <- read_csv('masterdata.csv')
+md <- read_csv('masterdata.csv') %>% filter(TN_Res_Flag == 'Y')
 ######################## Primary Payer (top 5) & Total Costs Paid Graph ----
 
 #Sets up an object that groups by primary payer, 
@@ -90,13 +90,17 @@ ggVennDiagram(syndemic_list,
   labs(title = 'Hospitalization overlap for substance use disorder (SUDs) and infectious sequela of interest',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022') +
-  scale_fill_distiller(palette = "RdBu", direction = 1) +
+  scale_color_manual(values = c('black','black')) +
+  scale_fill_gradientn(colors = c('red', 'blue', 'yellow', 'pink', 'green'))
+  
+  
+  scale_fill_distiller(palette = 'Set2', direction = 1) +
   scale_color_brewer(palette = "Set2")
 
 ######################## Trends in hospitalization incidence rates by age group ----
 
 #Reads in the private health info version of our dataset
-md_phi <- read.csv('masterdataphi.csv')
+md_phi <- read.csv('masterdataphi.csv') %>% filter(TN_Res_Flag == 'Y')
 
 #Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
 md_phi_jacob <- 

@@ -1,0 +1,162 @@
+---
+title: "Dashboard"
+author: "Syndemic"
+date: '2022-06-30'
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: row
+    vertical_layout: fill
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+
+library(flexdashboard)
+library(shiny)
+library(tidyverse)
+library(DT)
+library(plotly)
+library(leaflet)
+library(leaflet.extras)
+library(gsheet)
+pdf(NULL)
+
+setwd("D:/DataLab/syndemic")
+
+locations<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1sb4P_7-UkcpkmENZ_DpMI45wRY7oItIFbv-0suLmz7U/edit?usp=sharing")
+locations<-locations %>% mutate(label = paste(name,address,phone, sep = "\n"))
+masterdata<-read_csv("masterdata.csv")
+
+```
+
+```{r reactive}
+
+df_map<-reactive({
+  
+  df<-masterdata %>% filter(Patient_Zip %in%
+                              input$zip_select)
+  return(df)
+})
+
+```
+
+
+Important Visuals!
+=======================================
+
+
+Row
+---------------------------------------
+
+###
+
+Visualizing Cost!
+=======================================
+
+Row
+---------------------------------------
+
+###
+
+
+Map of Syringe Exchange Programs!
+=======================================
+
+Sidebar {.sidebar}
+---------------------------------------
+###
+
+```{r loc_inp}
+
+masterdatazips<-masterdata %>% filter(TN_Res_Flag == "Y") %>% pull(Patient_Zip) %>% unique() %>% sort()
+
+selectInput("zip_select",
+            "Choose zipcode",
+            choices = masterdatazips,
+            multiple = TRUE,
+            selected = masterdatazips[1])
+
+```
+
+
+Row
+---------------------------------------
+
+###
+
+```{r}
+renderValueBox({
+  sepcount<-nrow(locations)
+  valueBox("# of Syringe Exchange Programs in TN",
+           value = sepcount,
+           icon = "fa-syringe",
+           color = "red")
+})
+```
+
+###
+
+```{r}
+renderValueBox({
+  valueBox("# Counties in TN",
+           value = 95,
+           icon = "fa-building",
+           color = "grey")
+})
+```
+
+Row
+---------------------------------------
+
+###
+
+```{r}
+renderValueBox({
+  valueBox("# of people in TN",
+           value = 6910840,
+           icon = "fa-users",
+           color = "green")
+})
+```
+
+###
+
+```{r}
+
+renderValueBox({
+  
+  valueBox("percent of people in with SUD in selected zipcodes",
+           value = df_map() %>% filter(sud) %>% nrow(),
+           icon = "fa-user",
+           color = ifelse(df_map() %>% filter(sud) %>% nrow()<100,"green",ifelse(df_map() %>% filter(sud) %>% nrow()<300,"orange","red")))
+})
+```
+
+Row {.tabset .tabset-fade}
+---------------------------------------
+
+###
+
+```{r}
+renderLeaflet({
+  
+  leaflet(locations) %>%
+  addProviderTiles(providers$OpenStreetMap) %>% 
+  addMarkers(label = ~label)
+  
+})
+```
+
+
+
+```{r}
+ui<-fluidPage(
+  
+)
+
+server<-function(input, ouput, session) {
+  
+}
+
+shinyApp(ui,server)
+```
