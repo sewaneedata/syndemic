@@ -187,6 +187,23 @@ ggplot(data = md_phi_jacob %>%
        y = 'Total Patients') +
   scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
+#Plots SUDS and SSTVI or Endo
+ggplot(data = md_phi_jacob %>% 
+         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud, endo | sstvi) %>% 
+         group_by(Age_Groups, quarter) %>% 
+         tally(),
+       aes(x = quarter,
+           y = n,
+           color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs or Endocarditis',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+
 ######################## Trends in hospitalization costs (in dollars) ----
 
 #Adds a gov column, private or publicly funded, to md_phi
