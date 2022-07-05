@@ -279,4 +279,3 @@ ggplot(data = md_phi_jacob %>%
   theme(legend.position = 'bottom') +
   scale_fill_manual(values = c('#C11701', '#1B365D'))
 ########################
-
