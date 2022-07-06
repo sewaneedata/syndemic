@@ -298,7 +298,7 @@ ggplot(data = md_phi_jacob %>%
 
 ######################## Increase in cases ----
 
-ggplot(data = md %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
+ggplot(data = md_phi_jacob %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
          mutate(months = month(creation_dt)) %>% 
          mutate(quarter = ifelse(months %in% 1:3, 1,
                                  ifelse(months %in% 4:6, 2,
