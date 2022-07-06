@@ -5,5 +5,5 @@ discharges_anon
 .DS_Store
 copy_discharges_phi
 discharges_phi
-.Rhistory
+*.Rhistory
 .RData
