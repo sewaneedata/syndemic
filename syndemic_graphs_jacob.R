@@ -3,6 +3,7 @@ library(tidyverse)
 library(ggVennDiagram)
 library(forcats)
 library(lubridate)
+library(RSQLite)
 
 md <- read_csv('masterdata.csv')
 zipid<-read_csv("countybyid.csv")
@@ -295,4 +296,27 @@ ggplot(data = md_phi_jacob %>%
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
   scale_fill_manual(values = c('#C11701', '#1B365D'))
+
+######################## Unfiltered data glance ----
+
+# Reading in sqlite
+portaldb <- dbConnect(SQLite(), "copy_discharges_phi")
+
+# List tables in database
+dbListTables(portaldb)
+
+# Column names
+dbListFields(portaldb, "discharges_phi")
+
+res<-"SELECT * FROM discharges_phi "
+
+# Creating query
+ex<-dbGetQuery(portaldb, res)
+
+# Writing query data
+write.csv(ex, "CopyOfimpdataphi.csv")
+
+# Disconnect from sqlite
+dbDisconnect(portaldb)
+
 ########################
