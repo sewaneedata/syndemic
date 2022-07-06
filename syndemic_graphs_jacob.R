@@ -187,6 +187,23 @@ ggplot(data = md_phi_jacob %>%
        y = 'Total Patients') +
   scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
+#Plots SUDS and SSTVI or Endo
+ggplot(data = md_phi_jacob %>% 
+         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud, endo | sstvi) %>% 
+         group_by(Age_Groups, quarter) %>% 
+         tally(),
+       aes(x = quarter,
+           y = n,
+           color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs or Endocarditis',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+
 ######################## Trends in hospitalization costs (in dollars) ----
 
 #Adds a gov column, private or publicly funded, to md_phi
@@ -200,7 +217,7 @@ options(scipen = 999)
 
 #Plots SUDS and endo
 ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&endo),
+         filter(sud,endo),
        aes(x = quarter,
            y = Total_Tot_Chrg/100,
            fill = gov)) +
@@ -216,7 +233,7 @@ ggplot(data = md_phi_jacob %>%
 
 #Plots SUDS and ost
 ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&ost),
+         filter(sud, ost),
        aes(x = quarter,
            y = Total_Tot_Chrg/100,
            fill = gov)) +
@@ -232,7 +249,7 @@ ggplot(data = md_phi_jacob %>%
 
 #Plots SUDS and sepsis
 ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&sepsis),
+         filter(sud, sepsis),
        aes(x = quarter,
            y = Total_Tot_Chrg/100,
            fill = gov)) +
@@ -249,7 +266,7 @@ ggplot(data = md_phi_jacob %>%
 
 #Plots SUDS and SSTVIs
 ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&sstvi),
+         filter(sud, sstvi),
        aes(x = quarter,
            y = Total_Tot_Chrg/100,
            fill = gov)) +
@@ -263,5 +280,25 @@ ggplot(data = md_phi_jacob %>%
   theme(legend.position = 'bottom') +
   scale_fill_manual(values = c('#C11701', '#1B365D'))
   
-########################
+#Plots SUDS and SSTVIs or Endo
+ggplot(data = md_phi_jacob %>% 
+         filter(sud, sstvi|endo),
+       aes(x = quarter,
+           y = Total_Tot_Chrg/100,
+           fill = gov)) +
+  geom_col(position = 'dodge') +
+  labs(title = 'Trends in Costs for Substance Abuse and Endocarditis or a SSTVI',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Cost (In US Dollars)',
+       fill = 'Primary Payer:') +
+  theme(legend.position = 'bottom') +
+  scale_fill_manual(values = c('#C11701', '#1B365D'))
 
+######################## Unfiltered data glance (WIP)----
+
+#loads unfiltered data
+dataphi <- read_csv("dataphi.csv")
+
+########################
