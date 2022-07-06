@@ -1,12 +1,28 @@
 ---
-title: "Dashboard"
-author: "Syndemic"
-date: '2022-06-30'
-output: 
+title: "End The Syndemic"
+author: "DataLab"
+date: '2022'
+runtime: shiny
+output:
   flexdashboard::flex_dashboard:
+    theme:
+      version: 4
+      bg: "#FAFBFE"
+      fg: "#555555" 
+      primary: "#91BAA7"
+      navbar-bg: "#9A77C7"
+      base_font: 
+        google: Prompt
+      heading_font:
+        google: Open Sans
+      code_font:
+        google: 
+          # arguments to sass::font_google() 
+          family: sans_serif
+          local: false  
     orientation: row
     vertical_layout: fill
-runtime: shiny
+    
 ---
 
 ```{r setup, include=FALSE}
@@ -19,13 +35,49 @@ library(plotly)
 library(leaflet)
 library(leaflet.extras)
 library(gsheet)
+library(rgdal)
+library(raster)
+library(tigris)
+library(RColorBrewer)
+
 pdf(NULL)
 
 setwd("D:/DataLab/syndemic")
 
+# Reading in data of locations of SEP
 locations<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1sb4P_7-UkcpkmENZ_DpMI45wRY7oItIFbv-0suLmz7U/edit?usp=sharing")
-locations<-locations %>% mutate(label = paste(name,address,phone, sep = "\n"))
+# Creating a column named label
+locations<-locations %>% mutate(label = paste0("Name : ",name,"<br/>"," Address :",address,"<br/>","Phone :",phone,"<br/>" ) %>% lapply(htmltools::HTML))
+
+# Reading in master data
 masterdata<-read_csv("masterdata.csv")
+
+# Reading in data of zip codes and their county name
+zips<-read.csv("countybyid.csv")
+# Merging master data with county by ids
+masterdata<-full_join(zips,masterdata, by = "...1" ) %>% filter(state == "TN")
+
+# Reading in spatial polygon data for map
+s <- shapefile("D:/DataLab/syndemic/tl_2021_us_county") 
+boundaries <-subset(s, s@data$STATEFP == "47")
+
+# Making color pallet based on SUD in county
+paldata<-masterdata %>% filter(sud) %>%  group_by(county) %>% summarise(total = n())
+
+# Adding county total to spatial data frame
+boundaries<-geo_join(boundaries, paldata, by_sp ="NAMELSAD" , by_df ="county"  )
+
+pal <- colorNumeric(
+  palette = "Reds",
+  domain = boundaries@data$total )
+
+#
+syringes <- makeAwesomeIcon(
+  icon = "hospital user",
+  iconColor = "#FAFBFE",
+  markerColor ="purple",
+  library = "fa"
+)
 
 ```
 
@@ -33,10 +85,16 @@ masterdata<-read_csv("masterdata.csv")
 
 df_map<-reactive({
   
-  df<-masterdata %>% filter(Patient_Zip %in%
-                              input$zip_select)
+  if("All" %in% input$county_select){
+    return(boundaries)
+  }
+  # Select only counties that have been selected!
+  df<-subset(boundaries, boundaries@data$NAMELSAD %in% input$county_select)
   return(df)
+
 })
+
+
 
 ```
 
@@ -68,15 +126,21 @@ Sidebar {.sidebar}
 
 ```{r loc_inp}
 
-masterdatazips<-masterdata %>% filter(TN_Res_Flag == "Y") %>% pull(Patient_Zip) %>% unique() %>% sort()
+masterdatacountys<-masterdata %>% pull(county) %>% unique() %>% sort()
 
-selectInput("zip_select",
-            "Choose zipcode",
-            choices = masterdatazips,
+selectInput("county_select",
+            "Choose county",
+            choices = c("All",masterdatacountys),
             multiple = TRUE,
-            selected = masterdatazips[1])
+            selected = "All")
 
 ```
+
+### 
+
+*This is a map from 2019, where each purple pin marks the location of a Syringe Exchange Clinic in the state of Tennessee.*
+
+**Glossary :** *Substance Use Disorder ( SUD )*
 
 
 Row
@@ -86,11 +150,12 @@ Row
 
 ```{r}
 renderValueBox({
+  
   sepcount<-nrow(locations)
+  
   valueBox("# of Syringe Exchange Programs in TN",
            value = sepcount,
-           icon = "fa-syringe",
-           color = "red")
+           icon = "fa-syringe")
 })
 ```
 
@@ -100,54 +165,52 @@ renderValueBox({
 renderValueBox({
   valueBox("# Counties in TN",
            value = 95,
-           icon = "fa-building",
-           color = "grey")
+           icon = "fa-building")
 })
 ```
-
-Row
----------------------------------------
 
 ###
 
 ```{r}
 renderValueBox({
   valueBox("# of people in TN",
-           value = 6910840,
-           icon = "fa-users",
-           color = "green")
-})
-```
-
-###
-
-```{r}
-
-renderValueBox({
-  
-  valueBox("percent of people in with SUD in selected zipcodes",
-           value = df_map() %>% filter(sud) %>% nrow(),
-           icon = "fa-user",
-           color = ifelse(df_map() %>% filter(sud) %>% nrow()<100,"green",ifelse(df_map() %>% filter(sud) %>% nrow()<300,"orange","red")))
+           value = "6,910,840",
+           icon = "fa-users")
 })
 ```
 
 Row {.tabset .tabset-fade}
 ---------------------------------------
 
-###
+### Map
 
 ```{r}
 renderLeaflet({
   
-  leaflet(locations) %>%
+leaflet(locations) %>%
   addProviderTiles(providers$OpenStreetMap) %>% 
-  addMarkers(label = ~label)
+  addAwesomeMarkers(label = ~label, icon = syringes )%>%
+  addPolygons(data = df_map(),
+              color ="#FAFBFE",
+              fillColor = ~pal(total),
+              fillOpacity = .6,
+              weight = 2,
+              opacity = .9,
+              highlightOptions = highlightOptions(color = "#C11701", bringToFront = TRUE ),
+              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Cases of SUD  : ",df_map()@data$total ) %>% lapply(htmltools::HTML)) %>% 
+  addControlGPS(options = gpsOptions(position = "topleft", activate = TRUE, 
+                                             autoCenter = TRUE, maxZoom = 200, 
+                                             setView = TRUE)) %>% 
+    addLegend(pal = pal, 
+            values = boundaries@data$total, 
+            opacity = 0.7, 
+            title = htmltools::HTML("Total SUD cases <br>
+                                    by County <br>
+                                    2019"),
+            position = "bottomright")
   
 })
 ```
-
-
 
 ```{r}
 ui<-fluidPage(

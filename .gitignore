@@ -3,3 +3,14 @@
 icd10cm_order_2019.txt
 discharges_anon
 .DS_Store
+copy_discharges_phi
+discharges_phi
+.Rhistory
+.RData
+*.shp
+*.cpg
+*.dbf
+*.prj
+*.shx
+*.shp.ea.iso.xml
+*.shp.iso.xml
