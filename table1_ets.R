@@ -1,5 +1,5 @@
 library(tidyverse)
-mdata <- read.csv("m_data.csv")
+#mdata <- read.csv("m_data.csv")
 zips <- read_csv("countybyid.csv")
 masterdata <- read.csv("masterdata.csv")
 masterdata<-full_join(zips,masterdata, by = "...1" )

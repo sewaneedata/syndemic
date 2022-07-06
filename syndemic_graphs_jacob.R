@@ -296,6 +296,16 @@ ggplot(data = md_phi_jacob %>%
   theme(legend.position = 'bottom') +
   scale_fill_manual(values = c('#C11701', '#1B365D'))
 
+######################## Increase in cases ----
+
+ggplot(data = md %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
+         mutate(months = month(creation_dt)) %>% 
+         mutate(quarter = ifelse(months %in% 1:3, 1,
+                                 ifelse(months %in% 4:6, 2,
+                                        ifelse(months %in% 7:9, 3, 4)))),
+       aes(x = quarter)) +
+  geom_bar()
+
 ######################## Unfiltered data glance (WIP)----
 
 #loads unfiltered data
