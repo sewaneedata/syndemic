@@ -5,6 +5,7 @@ discharges_anon
 .DS_Store
 copy_discharges_phi
 discharges_phi
+<<<<<<< HEAD
 .Rhistory
 .RData
 *.shp
@@ -14,3 +15,5 @@ discharges_phi
 *.shx
 *.shp.ea.iso.xml
 *.shp.iso.xml
+=======
+>>>>>>> 81e1b20d6f1b39941438be5eb12032c1128e387d
