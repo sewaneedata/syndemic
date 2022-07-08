@@ -5,6 +5,7 @@ date: '2022'
 runtime: shiny
 output:
   flexdashboard::flex_dashboard:
+    logo: /Users/erteam/Desktop/Syndemic Project/syndemic/syndemiclogo.png
     theme:
       version: 4
       bg: "#FAFBFE"
@@ -717,22 +718,29 @@ Column
 
 ### DataLab 2022
 
+![The Sewanee DataLab makes the power of data analytics accessible for the greater good. We accomplish this by training and supporting a new generation of data scientists who work exclusively on social impact projects.The Sewanee DataLab seeks to expand the definition of data science and what it means to be a data scientist by training undergraduate students, academics, and professionals from a wide range of disciplines.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_0607.jpg)
+
 ```{r}
 ```
 
-Column .tabset}
+Column
 ---------------------------------------
 
-### Delana
+### Delana 
+Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. 
 
-```{r}
-```
+![ ](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_7015.jpg)
 
 ### Alan
 
+![Insert text about Alan here.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG-1319.jpg)
+
 ### Jacob
 
+![Jacob Herron (he/him) C'24 is a student at the University of the South from Rickman, Tennessee. During his time at Sewanee, he has started his major in economics and is working on a minor in mathematics. On campus, he can be found teaching new fencers at Fowler, catching up with friends and professors at Stirlings, or helping his peers at his job in the library. When he gradautes, he intends to pursue a masters degree in economics in hopes of working as an economist.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_5896.jpeg)
+
 ### Amber
+![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG-AMBR.jpeg)
 
 ```{r}
 ui<-fluidPage(
