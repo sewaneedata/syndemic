@@ -77,6 +77,8 @@ paldata<-masterdata %>% filter(sud) %>% group_by(county) %>% summarise(total = n
 boundaries<-geo_join(boundaries, paldata, by_sp ="NAMELSAD" , by_df ="county")
 boundaries<-geo_join(boundaries, popbycounty, by_sp = "NAMELSAD", by_df ="county")
 boundaries@data<-boundaries@data %>% mutate(percap = total/Population.2020)
+
+# Creating a palette to shade in the counties
 pal <- colorNumeric(
   palette = "Reds",
   domain = boundaries@data$total)
@@ -315,10 +317,10 @@ Row
 
 ```{r}
 renderLeaflet({
-  
-leaflet(locations) %>%
-  addProviderTiles(providers$OpenStreetMap) %>% 
-  addAwesomeMarkers(label = ~label, icon = syringes )%>%
+  # Map of just the markers
+leaflet(locations) %>% # Adding map in the background
+  addProviderTiles(providers$OpenStreetMap) %>% # Making the markers what we want
+  addAwesomeMarkers(label = ~label, icon = syringes )%>% # Adding the boundaries of counties 
   addPolygons(data = df_map(),
               color ="#FAFBFE",
               fillColor = ~pal(total),
@@ -326,10 +328,10 @@ leaflet(locations) %>%
               weight = 2,
               opacity = .9,
               highlightOptions = highlightOptions(color = "#C11701", bringToFront = TRUE ),
-              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Cases of SUD  : ",df_map()@data$total) %>% lapply(htmltools::HTML)) %>% 
+              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Cases of SUD  : ",df_map()@data$total) %>% lapply(htmltools::HTML)) %>% # Adding the option of zooming into your current loc
   addControlGPS(options = gpsOptions(position = "topleft", activate = TRUE, 
                                              autoCenter = TRUE, maxZoom = 200, 
-                                             setView = TRUE)) %>% 
+                                             setView = TRUE)) %>% # Adding legend explaining the shading
     addLegend(pal = pal, 
             values = boundaries@data$total, 
             opacity = 0.7, 
