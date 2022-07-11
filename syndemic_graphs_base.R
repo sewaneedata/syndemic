@@ -41,7 +41,7 @@ ggplot(data = md_top_payers,
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Primary Provider',
        y = 'Cost Paid (in millions of US dollars)') +
-  scale_fill_manual(md_top_payers, values = c('#1B365D', '#C11701'), 
+  scale_fill_manual(md_top_payers, values = c('#1B365D', '#91BAA7'), 
                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
                     name = 'Color Legend:') +
   theme(legend.position = 'bottom') +
@@ -71,7 +71,7 @@ ggplot(data = md_big_gov,
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        x = 'Primary Payer',
        y = 'Cost Paid (in millions of US dollars)') +
-  scale_fill_manual(md_top_payers, values = c('#C11701', '#1B365D')) +
+  scale_fill_manual(md_top_payers, values = c('#91BAA7', '#1B365D')) +
   theme(legend.position = '0')
 
 ######################## Venn Diagram of SUDs Patients & Syndemic-Related Illnesses Patients ----
@@ -91,14 +91,14 @@ ggVennDiagram(syndemic_list,
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022') +
   scale_color_manual(values = c('black','black')) +
-  scale_fill_gradientn(colors = c('#555555', '#C11701', '#555555', '#1B365D'))
+  scale_fill_gradientn(colors = c('#555555', '#91BAA7', '#555555', '#1B365D'))
 
 ######################## Trends in hospitalization incidence rates by age group ----
 
 #Reads in the private health info version of our dataset
 md_phi <- read.csv('masterdataphi.csv')
 zips<-read_csv("zip_code_database.csv")
-zips<-zips%>% select(zip,state,county)
+zips<-zips %>% select(zip,state,county)
 zips<-zips %>% rename(Patient_Zip = zip)
 d<-full_join(md_phi,zips, by = "Patient_Zip")
 md_phi<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state == "TN")
@@ -129,12 +129,12 @@ ggplot(data = md_phi_jacob %>%
           color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and Endocarditis',
+  labs(title = 'Trends in Hospitalization for Substance Use and Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+  scale_color_manual(values = c('#91BAA7', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and osteo
 ggplot(data = md_phi_jacob %>% 
@@ -146,12 +146,12 @@ ggplot(data = md_phi_jacob %>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and Ostemyelitis',
+  labs(title = 'Trends in Hospitalization for Substance Use and Ostemyelitis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+  scale_color_manual(values = c('#91BAA7', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and sepsis
 ggplot(data = md_phi_jacob%>% 
@@ -163,12 +163,12 @@ ggplot(data = md_phi_jacob%>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and Sepsis',
+  labs(title = 'Trends in Hospitalization for Substance Use and Sepsis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+  scale_color_manual(values = c('#91BAA7', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and sstvi
 ggplot(data = md_phi_jacob %>% 
@@ -180,12 +180,12 @@ ggplot(data = md_phi_jacob %>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs',
+  labs(title = 'Trends in Hospitalization for Substance Use and all SSTVIs',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+  scale_color_manual(values = c('#91BAA7', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 #Plots SUDS and SSTVI or Endo
 ggplot(data = md_phi_jacob %>% 
@@ -197,12 +197,12 @@ ggplot(data = md_phi_jacob %>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs or Endocarditis',
+  labs(title = 'Trends in Hospitalization for Substance Use and all SSTVIs or Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
+  scale_color_manual(values = c('#91BAA7', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))
 
 ######################## Trends in hospitalization costs (in dollars) ----
 
@@ -222,14 +222,14 @@ ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +   
-  labs(title = 'Trends in Costs for Substance Abuse and Endocarditis',
+  labs(title = 'Trends in Costs for Substance Use and Endocarditis',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D'))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D'))
 
 #Plots SUDS and ost
 ggplot(data = md_phi_jacob %>% 
@@ -238,14 +238,14 @@ ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and Osteomyelitis',
+  labs(title = 'Trends in Costs for Substance Use and Osteomyelitis',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D'))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D'))
 
 #Plots SUDS and sepsis
 ggplot(data = md_phi_jacob %>% 
@@ -254,14 +254,14 @@ ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and Sepsis',
+  labs(title = 'Trends in Costs for Substance Use and Sepsis',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D'))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D'))
 
 
 #Plots SUDS and SSTVIs
@@ -271,14 +271,14 @@ ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and all SSTVIs',
+  labs(title = 'Trends in Costs for Substance Use and all SSTVIs',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D'))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D'))
   
 #Plots SUDS and SSTVIs or Endo
 ggplot(data = md_phi_jacob %>% 
@@ -287,28 +287,13 @@ ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and Endocarditis or a SSTVI',
+  labs(title = 'Trends in Costs for Substance Use and Endocarditis or a SSTVI',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D'))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D'))
 
-######################## Increase in cases ----
-
-ggplot(data = md_phi_jacob %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
-         mutate(months = month(creation_dt)) %>% 
-         mutate(quarter = ifelse(months %in% 1:3, 1,
-                                 ifelse(months %in% 4:6, 2,
-                                        ifelse(months %in% 7:9, 3, 4)))),
-       aes(x = quarter)) +
-  geom_bar()
-
-######################## Unfiltered data glance (WIP)----
-
-#loads unfiltered data
-dataphi <- read_csv("dataphi.csv")
-
-########################
+######################## The End ---- 
