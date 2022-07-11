@@ -68,6 +68,16 @@ zips<-read.csv("countybyid.csv")
 masterdata<-inner_join(zips,masterdata, by = "...1" ) %>% filter(state == "TN")
 masterdata<-inner_join(popbycounty,masterdata, by = "county")
 masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
+# Adding the real labels to race and ethnicity
+masterdata<-masterdata %>% mutate(Race = ifelse(Race == 1,"White or Caucasian",
+                                                ifelse(Race == 2,"Black or African American",
+                                                       ifelse(Race == 3,"Native American or Alaska Native",
+                                                              ifelse(Race == 4,"Asian or Pacific Islander",
+                                                                     ifelse(Race == 5,"Other Race","Unknown Race"))))))
+#
+masterdata<-masterdata %>% mutate(Ethnicity = ifelse(Ethnicity == 1,"Hispanic Origin",
+                                                     ifelse(Ethnicity ==3,"Not Hispanic Origin","Hispanic Origin Unknown")))
+
 
 # Reading in spatial polygon data for map
 s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county") 
@@ -127,51 +137,398 @@ df_map<-reactive({
 
 })
 
+# for sud and endo or sstvi
 df1<-reactive({
   
-  if("All" %in% input$race & "All" %in% input$eth ){
-    df<-md_phi_jacob %>% filter(Patient_Sex %in% input$gender)%>%
+  if(input$gender == "Both"){
+    
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(sud&(endo|sstvi)) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(sud&(endo|sstvi)) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(sud&(endo|sstvi)) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(sud&(endo|sstvi)) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+    
+  }
+  else{
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(Patient_Sex %in% input$gender)%>%
+        filter(sud&(endo|sstvi)) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(Patient_Sex %in% input$gender)%>%
+      filter(sud&(endo|sstvi)) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(Patient_Sex %in% input$gender)%>% 
+      filter(sud&(endo|sstvi)) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(Patient_Sex %in% input$gender)%>% 
+        filter(sud&(endo|sstvi)) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+  }
+})
+
+# for sud and endo
+df2<-reactive({
+  
+  if(input$gender == "Both"){
+    
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(sud&endo) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
       filter(sud&endo) %>%
       group_by(Age_Groups, quarter) %>%
       tally()
     return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(sud&endo) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(sud&endo) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+    
   }
-  #select 
-  if("All" %in% input$race & !("All" %in% input$eth) ){
-  df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
-    filter(Patient_Sex %in% input$gender)%>%
-    filter(sud&endo) %>%
-    group_by(Age_Groups, quarter) %>%
-    tally()
-  return(df)
-  }
-  # Select
-  if(!("All" %in% input$race) & "All" %in% input$eth){
-  df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
-    filter(Patient_Sex %in% input$gender)%>% 
-    filter(sud&endo) %>% 
-    group_by(Age_Groups, quarter) %>% 
-    tally()
-  return(df)
-  }  
   else{
-      df<-md_phi_jacob %>% filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(Patient_Sex %in% input$gender)%>%
+        filter(sud&endo) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(Patient_Sex %in% input$gender)%>%
+      filter(sud&endo) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(Patient_Sex %in% input$gender)%>% 
+      filter(sud&endo) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
         filter(Patient_Sex %in% input$gender)%>% 
         filter(sud&endo) %>% 
         group_by(Age_Groups, quarter) %>% 
         tally()
       return(df)
+    }
+  }
+})
+
+#for sud and osto
+df3<-reactive({
+  
+  if(input$gender == "Both"){
+    
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(sud&ost) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(sud&ost) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(sud&ost) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(sud&ost) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+    
+  }
+  else{
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(Patient_Sex %in% input$gender)%>%
+        filter(sud&ost) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(Patient_Sex %in% input$gender)%>%
+      filter(sud&ost) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(Patient_Sex %in% input$gender)%>% 
+      filter(sud&ost) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(Patient_Sex %in% input$gender)%>% 
+        filter(sud&ost) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+  }
+})
+
+# For sud and sepsis
+df4<-reactive({
+  
+  if(input$gender == "Both"){
+    
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(sud&sepsis) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(sud&sepsis) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(sud&sepsis) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(sud&sepsis) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+    
+  }
+  else{
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(Patient_Sex %in% input$gender)%>%
+        filter(sud&sepsis) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(Patient_Sex %in% input$gender)%>%
+      filter(sud&sepsis) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(Patient_Sex %in% input$gender)%>% 
+      filter(sud&sepsis) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(Patient_Sex %in% input$gender)%>% 
+        filter(sud&sepsis) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+  }
+})
+
+#for sud and sstvi
+df5<-reactive({
+  
+  if(input$gender == "Both"){
+    
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(sud&sstvi) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(sud&sstvi) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(sud&sstvi) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(sud&sstvi) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
+    
+  }
+  else{
+    if("All" %in% input$Race & "All" %in% input$eth ){
+      df<-md_phi_jacob %>%
+        filter(Patient_Sex %in% input$gender)%>%
+        filter(sud&sstvi) %>%
+        group_by(Age_Groups, quarter) %>%
+        tally()
+      return(df)
+    }
+    #select 
+    if("All" %in% input$Race & !("All" %in% input$eth) ){
+    df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+      filter(Patient_Sex %in% input$gender)%>%
+      filter(sud&sstvi) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+    }
+    # Select
+    if(!("All" %in% input$Race) & "All" %in% input$eth){
+    df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+      filter(Patient_Sex %in% input$gender)%>% 
+      filter(sud&sstvi) %>% 
+      group_by(Age_Groups, quarter) %>% 
+      tally()
+    return(df)
+    }  
+    else{
+      df<-md_phi_jacob %>%
+        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(Patient_Sex %in% input$gender)%>% 
+        filter(sud&sstvi) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+    }
   }
 })
 
 
-
 ```
 
-Home Page {data-orientation=rows}
+Home Page  <!--{data-orientation=rows} -->
 =======================================
 
-Row {.tabset}
+Column
 ---------------------------------------
 
 ### End The Syndemic
@@ -179,6 +536,9 @@ Row {.tabset}
 <img src="/Users/erteam/Desktop/Syndemic Project/syndemic/HomePage.png" width=600>
 
 <!-- ![](/Users/erteam/Desktop/Syndemic Project/syndemic/HomePage.png) -->
+
+Column
+---------------------------------------
 
 ### Glossary
 
@@ -199,9 +559,6 @@ veins, including sepsis, endocarditis, and osteomyelitis
 **Syringe Service Programs or Syringe Exchange Programs (SSPs/SEPs):** community-based prevention programs that can provide a range of services, including: access to and disposal of sterile syringes and injection equipment, linkage to substance use disorder treatment, distribution of naloxone, a medication that reverses overdoses, vaccination, testing, linkage to treatment for infectious diseases, including HIV and hepatitis B and C, education about overdose prevention and safer injection practices, abscess and wound care, and referral to social, mental health, and other medical services
 
 
-
-Plotly
-
 Important Visuals! {style="position:relative;"}
 =======================================
 
@@ -211,42 +568,37 @@ Sidebar {.sidebar}
 
 ```{r sidebar}
 
-race<-masterdata %>% pull(Race) %>% sort()
+race<-masterdata %>% pull(Race) %>% unique() %>% sort()
 
-selectInput("race",
+radioButtons("Race",
             "Choose Race",
             choices = c("All",race),
-            multiple = TRUE,
             selected = "All")
 
-eth<-masterdata %>% pull(Ethnicity) %>% sort()
+eth<-masterdata %>% pull(Ethnicity) %>% unique() %>% sort()
 
-selectInput("eth",
+radioButtons("eth",
             "Choose Ethnicity",
             choices = c("All",eth),
-            multiple = TRUE,
-            selected = "ALL")
+            selected = "All")
 
-gender<-masterdata %>% pull(Patient_Sex) %>% unique() %>% sort()
+gender<-masterdata %>% filter(!Patient_Sex=="9") %>%  pull(Patient_Sex) %>% unique() %>% sort()
 
-selectInput("gender",
+radioButtons("gender",
             "Choose Gender",
-            choices = gender,
-            multiple = TRUE,
-            selected = "M")
+            choices = c("Both",gender),
+            selected = "Both")
 ```
 
-Column {style="height:200pc;"}
+Column {style="height:160pc;"}
 ---------------------------------------
 
 ### TRENDS
 
 ```{r}
+renderPlotly({
 #Plots SUDS and endo
-  b1<-ggplotly(ggplot(md_phi_jacob %>% 
-         filter(sud&ost) %>% 
-         group_by(Age_Groups, quarter) %>% 
-         tally(),
+  b1<-ggplotly(ggplot(df2(),
       aes(x = quarter,
           y = n,
           color = Age_Groups)) +
@@ -261,10 +613,7 @@ Column {style="height:200pc;"}
 
   
   #Plots SUDS and osteo
-    b2<-ggplotly(ggplot(data = md_phi_jacob %>% 
-         filter(sud&ost) %>% 
-         group_by(Age_Groups, quarter) %>% 
-         tally(),
+    b2<-ggplotly(ggplot(data = df3(),
        aes(x = quarter,
            y = n,
            color = Age_Groups)) +
@@ -279,10 +628,7 @@ Column {style="height:200pc;"}
   
     
   #Plots SUDS and sepsis
-b3<-ggplotly(ggplot(data = md_phi_jacob%>% 
-         filter(sud&sepsis) %>% 
-         group_by(Age_Groups, quarter) %>% 
-         tally(),
+b3<-ggplotly(ggplot(data = df4(),
        aes(x = quarter,
            y = n,
            color = Age_Groups)) +
@@ -297,10 +643,7 @@ b3<-ggplotly(ggplot(data = md_phi_jacob%>%
   
   
   #Plots SUDS and sstvi
-b4<-ggplotly(ggplot(data = md_phi_jacob %>% 
-         filter(sud&sstvi) %>% 
-         group_by(Age_Groups, quarter) %>% 
-         tally(),
+b4<-ggplotly(ggplot(data = df5(),
        aes(x = quarter,
            y = n,
            color = Age_Groups)) +
@@ -356,7 +699,7 @@ annotations = list(
   ))
 
 
-renderPlotly({ 
+
 subplot(style(b1,showlegend = FALSE),style(b2,showlegend = FALSE),style(b3,showlegend = FALSE),b4,nrows = 2, shareX = TRUE ) %>% layout(title = "Trends over time for Substance Use " , annotations = annotations)
  })
 ```
@@ -367,8 +710,30 @@ subplot(style(b1,showlegend = FALSE),style(b2,showlegend = FALSE),style(b3,showl
 
   
   #Plots SUDS and SSTVI or Endo
-ggplotly(ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud, endo | sstvi) %>% 
+renderPlotly(ggplotly(ggplot(df1(),
+       aes(x = quarter,
+           y = n,
+           color = Age_Groups)) +
+  geom_point() +
+  geom_line() +
+  labs(title = 'Trends in Hospitalization for Substance Use  and all SSTVIs or Endocarditis',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
+       caption = 'End the Syndemic | DataLab 2022',
+       x = 'Yearly Quarter',
+       y = 'Total Patients') +
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))))
+  
+
+```
+
+### Graph 6
+
+```{r}
+
+  
+  #Plots SUDS and SSTVI or Endo
+renderPlotly(ggplotly(ggplot(data =md_phi_jacob %>% 
+         filter(sud&(sstvi|endo)) %>% 
          group_by(Age_Groups, quarter) %>% 
          tally(),
        aes(x = quarter,
@@ -381,28 +746,10 @@ ggplotly(ggplot(data = md_phi_jacob %>%
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7')))
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))))
   
 
 ```
-
-### Graph 6
-
-```{r}
-
-  # 
-  # ggplotly(ggplot(data = df() %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
-  #        mutate(months = month(creation_dt)) %>% 
-  #        mutate(quarter = ifelse(months %in% 1:3, 1,
-  #                                ifelse(months %in% 4:6, 2,
-  #                                       ifelse(months %in% 7:9, 3, 4)))),
-  #      aes(x = quarter)) +
-  # geom_bar())
-
-  
-
-```
-
 
 Visualizing Cost! {data-orientation=rows}
 =======================================
