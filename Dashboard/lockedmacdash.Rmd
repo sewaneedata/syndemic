@@ -43,6 +43,7 @@ library(ggVennDiagram)
 library(forcats)
 library(lubridate)
 library(patchwork)
+library(tidyr)
 
 pdf(NULL)
 
@@ -66,6 +67,7 @@ zips<-read.csv("countybyid.csv")
 # Merging master data with county by ids
 masterdata<-inner_join(zips,masterdata, by = "...1" ) %>% filter(state == "TN")
 masterdata<-inner_join(popbycounty,masterdata, by = "county")
+masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
 
 # Reading in spatial polygon data for map
 s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county") 
@@ -81,8 +83,9 @@ boundaries@data<-boundaries@data %>% mutate(percap = (total/Population.2020)*100
 
 mean(boundaries@data$percap)
 
+# Making palette for shading of map
 pal <- colorNumeric(
-  palette = "Reds",
+  palette = "Blues",
   domain = boundaries@data$percap)
 
 #
@@ -92,6 +95,22 @@ syringes <- makeAwesomeIcon(
   markerColor ="purple",
   library = "fa"
 )
+
+  #Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
+md_phi_jacob <- 
+  masterdata %>% 
+  mutate(creation_dt = mdy(creation_dt)) %>% 
+  mutate(months = month(creation_dt)) %>% 
+  mutate(Age_Groups = ifelse(Age %in% 0:17, '0-17', 
+                             ifelse(Age %in% 18:24, '18-24',
+                                    ifelse(Age %in% 25:34, '25-34',
+                                           ifelse(Age %in% 35:44, '35-44',
+                                                  ifelse(Age %in% 45:54, '45-54',
+                                                         ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
+  mutate(quarter = ifelse(months %in% 1:3, 1,
+                          ifelse(months %in% 4:6, 2,
+                                 ifelse(months %in% 7:9, 3, 4)))) %>% 
+  filter(!Age_Groups == '65+', !Age_Groups == '0-17')
 
 ```
 
@@ -108,6 +127,43 @@ df_map<-reactive({
 
 })
 
+df1<-reactive({
+  
+  if("All" %in% input$race & "All" %in% input$eth ){
+    df<-md_phi_jacob %>% filter(Patient_Sex %in% input$gender)%>%
+      filter(sud&endo) %>%
+      group_by(Age_Groups, quarter) %>%
+      tally()
+    return(df)
+  }
+  #select 
+  if("All" %in% input$race & !("All" %in% input$eth) ){
+  df<-md_phi_jacob %>% filter(Ethnicity %in% input$eth)%>%
+    filter(Patient_Sex %in% input$gender)%>%
+    filter(sud&endo) %>%
+    group_by(Age_Groups, quarter) %>%
+    tally()
+  return(df)
+  }
+  # Select
+  if(!("All" %in% input$race) & "All" %in% input$eth){
+  df<-md_phi_jacob %>% filter(Race %in% input$Race)%>%
+    filter(Patient_Sex %in% input$gender)%>% 
+    filter(sud&endo) %>% 
+    group_by(Age_Groups, quarter) %>% 
+    tally()
+  return(df)
+  }  
+  else{
+      df<-md_phi_jacob %>% filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
+        filter(Patient_Sex %in% input$gender)%>% 
+        filter(sud&endo) %>% 
+        group_by(Age_Groups, quarter) %>% 
+        tally()
+      return(df)
+  }
+})
+
 
 
 ```
@@ -120,13 +176,29 @@ Row {.tabset}
 
 ### End The Syndemic
 
-Syndemic made of two or more pandemics with combined biological factors that cause a syndemic
+<img src="/Users/erteam/Desktop/Syndemic Project/syndemic/HomePage.png" width=600>
 
-### Who is this for?
+<!-- ![](/Users/erteam/Desktop/Syndemic Project/syndemic/HomePage.png) -->
 
-For everyone, more specifically Tennessee Residents
+### Glossary
 
-### Navigating the dashboard.
+**Endocarditis:** infection of the inner lining of heart
+chambers and valves
+
+**Osteomyelitis:** infection of the bone
+
+**Sepsis:** the body's extreme response to an infection
+
+**Skin, soft tissue, & venous infections (SSTVI):** infection of the skin, soft tissues, and
+veins, including sepsis, endocarditis, and osteomyelitis
+
+**Substance Use Disorder (SUDs):** persistent use of drugs (including alcohol) despite substantial harm and adverse consequences as a result of their use
+
+**Syndemic:** two or more concurrent or sequential epidemics or disease clusters in a population with biological interactions, which exacerbate the prognosis and burden of disease
+
+**Syringe Service Programs or Syringe Exchange Programs (SSPs/SEPs):** community-based prevention programs that can provide a range of services, including: access to and disposal of sterile syringes and injection equipment, linkage to substance use disorder treatment, distribution of naloxone, a medication that reverses overdoses, vaccination, testing, linkage to treatment for infectious diseases, including HIV and hepatitis B and C, education about overdose prevention and safer injection practices, abscess and wound care, and referral to social, mental health, and other medical services
+
+
 
 Plotly
 
@@ -139,34 +211,40 @@ Sidebar {.sidebar}
 
 ```{r sidebar}
 
+race<-masterdata %>% pull(Race) %>% sort()
+
+selectInput("race",
+            "Choose Race",
+            choices = c("All",race),
+            multiple = TRUE,
+            selected = "All")
+
+eth<-masterdata %>% pull(Ethnicity) %>% sort()
+
+selectInput("eth",
+            "Choose Ethnicity",
+            choices = c("All",eth),
+            multiple = TRUE,
+            selected = "ALL")
+
+gender<-masterdata %>% pull(Patient_Sex) %>% unique() %>% sort()
+
+selectInput("gender",
+            "Choose Gender",
+            choices = gender,
+            multiple = TRUE,
+            selected = "M")
 ```
 
 Column {style="height:200pc;"}
 ---------------------------------------
 
-### Graph 1
+### TRENDS
 
 ```{r}
-md_phi<-masterdata
-#Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
-md_phi_jacob <- 
-  md_phi %>% 
-  mutate(creation_dt = mdy(creation_dt)) %>% 
-  mutate(months = month(creation_dt)) %>% 
-  mutate(Age_Groups = ifelse(Age %in% 0:17, '0-17', 
-                             ifelse(Age %in% 18:24, '18-24',
-                                    ifelse(Age %in% 25:34, '25-34',
-                                           ifelse(Age %in% 35:44, '35-44',
-                                                  ifelse(Age %in% 45:54, '45-54',
-                                                         ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
-  mutate(quarter = ifelse(months %in% 1:3, 1,
-                          ifelse(months %in% 4:6, 2,
-                                 ifelse(months %in% 7:9, 3, 4)))) 
-
-
 #Plots SUDS and endo
-  b1<-ggplotly(ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&endo) %>% 
+  b1<-ggplotly(ggplot(md_phi_jacob %>% 
+         filter(sud&ost) %>% 
          group_by(Age_Groups, quarter) %>% 
          tally(),
       aes(x = quarter,
@@ -174,17 +252,17 @@ md_phi_jacob <-
           color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and Endocarditis',
+  labs(title = 'Trends in Hospitalization for Substance Use  and Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7')), showlegend = FALSE)
+  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7')))
 
   
   #Plots SUDS and osteo
     b2<-ggplotly(ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&ost) %>% 
+         filter(sud&ost) %>% 
          group_by(Age_Groups, quarter) %>% 
          tally(),
        aes(x = quarter,
@@ -192,7 +270,7 @@ md_phi_jacob <-
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and Ostemyelitis',
+  labs(title = 'Trends in Hospitalization for Substance Use  and Ostemyelitis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
@@ -202,7 +280,7 @@ md_phi_jacob <-
     
   #Plots SUDS and sepsis
 b3<-ggplotly(ggplot(data = md_phi_jacob%>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&sepsis) %>% 
+         filter(sud&sepsis) %>% 
          group_by(Age_Groups, quarter) %>% 
          tally(),
        aes(x = quarter,
@@ -210,7 +288,7 @@ b3<-ggplotly(ggplot(data = md_phi_jacob%>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and Sepsis',
+  labs(title = 'Trends in Hospitalization for Substance Use  and Sepsis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
@@ -220,7 +298,7 @@ b3<-ggplotly(ggplot(data = md_phi_jacob%>%
   
   #Plots SUDS and sstvi
 b4<-ggplotly(ggplot(data = md_phi_jacob %>% 
-         filter(!Age_Groups == '65+', !Age_Groups == '0-17', sud&sstvi) %>% 
+         filter(sud&sstvi) %>% 
          group_by(Age_Groups, quarter) %>% 
          tally(),
        aes(x = quarter,
@@ -228,7 +306,7 @@ b4<-ggplotly(ggplot(data = md_phi_jacob %>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs',
+  labs(title = 'Trends in Hospitalization for Substance Use  and all SSTVIs',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
@@ -239,7 +317,7 @@ annotations = list(
   list( 
     x = 0.2,  
     y = 1.0,  
-    text = "Trends in Hospitalizations for Substance Abuse and Endocarditis",  
+    text = "Trends in Hospitalizations for Substance Use  and Endocarditis",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -249,7 +327,7 @@ annotations = list(
   list( 
     x = 0.8,  
     y = 1,  
-    text = "Trends in Hospitalizations for Substance Abuse and Osteomyelitis",  
+    text = "Trends in Hospitalizations for Substance Use  and Osteomyelitis",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -259,7 +337,7 @@ annotations = list(
   list( 
     x = 0.2,  
     y = 0.49,  
-    text = "Trends in Hospitalizations for Substance Abuse and Sepsis",  
+    text = "Trends in Hospitalizations for Substance Use  and Sepsis",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -269,16 +347,18 @@ annotations = list(
   list( 
     x = 0.8,  
     y = 0.49,  
-    text = "Trends in Hospitalization for Substance Abuse and all SSTVIs",  
+    text = "Trends in Hospitalization for Substance Use  and all SSTVIs",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
     yanchor = "bottom",  
     showarrow = FALSE 
   ))
-  
-subplot(style(b1,showlegend = FALSE),style(b2,showlegend = FALSE),style(b3,showlegend = FALSE),b4,nrows = 2, shareX = TRUE ) %>% layout(title = "Trends over time for Substance Abuse" , annotations = annotations)
 
+
+renderPlotly({ 
+subplot(style(b1,showlegend = FALSE),style(b2,showlegend = FALSE),style(b3,showlegend = FALSE),b4,nrows = 2, shareX = TRUE ) %>% layout(title = "Trends over time for Substance Use " , annotations = annotations)
+ })
 ```
 
 ### Graph 5
@@ -296,7 +376,7 @@ ggplotly(ggplot(data = md_phi_jacob %>%
            color = Age_Groups)) +
   geom_point() +
   geom_line() +
-  labs(title = 'Trends in Hospitalization for Substance Abuse and all SSTVIs or Endocarditis',
+  labs(title = 'Trends in Hospitalization for Substance Use  and all SSTVIs or Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
@@ -310,14 +390,14 @@ ggplotly(ggplot(data = md_phi_jacob %>%
 
 ```{r}
 
-  
-  ggplotly(ggplot(data = md_phi_jacob %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
-         mutate(months = month(creation_dt)) %>% 
-         mutate(quarter = ifelse(months %in% 1:3, 1,
-                                 ifelse(months %in% 4:6, 2,
-                                        ifelse(months %in% 7:9, 3, 4)))),
-       aes(x = quarter)) +
-  geom_bar())
+  # 
+  # ggplotly(ggplot(data = df() %>%  mutate(creation_dt = mdy(creation_dt)) %>% 
+  #        mutate(months = month(creation_dt)) %>% 
+  #        mutate(quarter = ifelse(months %in% 1:3, 1,
+  #                                ifelse(months %in% 4:6, 2,
+  #                                       ifelse(months %in% 7:9, 3, 4)))),
+  #      aes(x = quarter)) +
+  # geom_bar())
 
   
 
@@ -373,7 +453,7 @@ a1<-ggplotly(ggplot(data = md_top_payers,
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Primary Provider',
        y = 'Cost Paid (in millions of US dollars)') +
-  scale_fill_manual(md_top_payers, values = c('#1B365D', '#C11701'), 
+  scale_fill_manual(md_top_payers, values = c('#1B365D', '#91BAA7'), 
                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
                     name = 'Color Legend:') +
   theme(legend.position = 'bottom') +
@@ -402,7 +482,7 @@ a2<-ggplotly(ggplot(data = md_big_gov,
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        x = 'Primary Payer',
        y = 'Cost Paid (in millions of US dollars)') +
-  scale_fill_manual(md_top_payers, values = c('#C11701', '#1B365D'), 
+  scale_fill_manual(md_top_payers, values = c('#91BAA7', '#1B365D'), 
                     labels = c('Privately Funded', 'Government Funded'),
                     name = 'Color Legend:'))
   
@@ -425,11 +505,11 @@ ggVennDiagram(syndemic_list,
               label_alpha = 0.3,
               label = c('count')) +
   theme(legend.position = '0') +
-  labs(title = 'Hospitalization overlap for substance use disorder (SUDs) and infectious sequela of interest',
+  labs(title = 'Hospitalization overlap for substance use and infectious sequela of interest',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022') +
   scale_color_manual(values = c('black','black')) +
-  scale_fill_gradientn(colors = c('#555555', '#C11701', '#555555', '#1B365D'))
+  scale_fill_gradientn(colors = c('#555555', '#91BAA7', '#555555', '#1B365D'))
 
 ```
 
@@ -453,14 +533,14 @@ g1<-ggplotly(ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +   
-  labs(title = 'Trends in Costs for Substance Abuse and Endocarditis',
+  labs(title = 'Trends in Costs for Substance Use  and Endocarditis',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'none') +
-  scale_fill_manual(values = c('#C11701', '#1B365D')))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D')))
 
 
   #Adds a gov column, private or publicly funded, to md_phi
@@ -478,14 +558,14 @@ g2<-ggplotly(ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and Osteomyelitis',
+  labs(title = 'Trends in Costs for Substance Use  and Osteomyelitis',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'none') +
-  scale_fill_manual(values = c('#C11701', '#1B365D')))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D')))
 
   #Adds a gov column, private or publicly funded, to md_phi
 md_phi_jacob <- md_phi_jacob %>%
@@ -502,14 +582,14 @@ g3<-ggplotly(ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and Sepsis',
+  labs(title = 'Trends in Costs for Substance Use  and Sepsis',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'none') +
-  scale_fill_manual(values = c('#C11701', '#1B365D')))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D')))
   
 
   #Adds a gov column, private or publicly funded, to md_phi
@@ -527,20 +607,20 @@ g4<-ggplotly(ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and all SSTVIs',
+  labs(title = 'Trends in Costs for Substance Use  and all SSTVIs',
                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
                       caption = 'End the Syndemic | DataLab 2022',
                       x = 'Yearly Quarter',
                       y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D')))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D')))
 
 annotations = list( 
   list( 
     x = 0.2,  
     y = 1.0,  
-    text = "Trends in Costs for Substance Abuse and Endocarditis",  
+    text = "Trends in Costs for Substance Use  and Endocarditis",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -550,7 +630,7 @@ annotations = list(
   list( 
     x = 0.8,  
     y = 1,  
-    text = "Trends in Costs for Substance Abuse and Osteomyelitis",  
+    text = "Trends in Costs for Substance Use  and Osteomyelitis",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -560,7 +640,7 @@ annotations = list(
   list( 
     x = 0.2,  
     y = 0.49,  
-    text = "Trends in Costs for Substance Abuse and Sepsis",  
+    text = "Trends in Costs for Substance Use  and Sepsis",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -570,7 +650,7 @@ annotations = list(
   list( 
     x = 0.8,  
     y = 0.49,  
-    text = "Trends in Costs for Substance Abuse and all SSTVIs",  
+    text = "Trends in Costs for Substance Use  and all SSTVIs",  
     xref = "paper",  
     yref = "paper",  
     xanchor = "center",  
@@ -578,7 +658,7 @@ annotations = list(
     showarrow = FALSE 
   ))
 
-subplot(style(g1,showlegend = FALSE),style(g2,showlegend = FALSE),style(g3,showlegend = FALSE),g4,nrows = 2, shareX = TRUE, shareY = TRUE ) %>% layout(title = "Trends in Cost for Substance Abuse" , annotations = annotations)
+subplot(style(g1,showlegend = FALSE),style(g2,showlegend = FALSE),style(g3,showlegend = FALSE),g4,nrows = 2, shareX = TRUE, shareY = TRUE ) %>% layout(title = "Trends in Cost for Substance Use " , annotations = annotations)
   
 ```
 
@@ -601,14 +681,14 @@ ggplotly(ggplot(data = md_phi_jacob %>%
            y = Total_Tot_Chrg/100,
            fill = gov)) +
   geom_col(position = 'dodge') +
-  labs(title = 'Trends in Costs for Substance Abuse and Endocarditis or a SSTVI',
+  labs(title = 'Trends in Costs for Substance Use  and Endocarditis or a SSTVI',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Cost (In US Dollars)',
        fill = 'Primary Payer:') +
   theme(legend.position = 'bottom') +
-  scale_fill_manual(values = c('#C11701', '#1B365D')))
+  scale_fill_manual(values = c('#91BAA7', '#1B365D')))
 
   
 })
@@ -694,8 +774,8 @@ leaflet(locations) %>%
               fillOpacity = .6,
               weight = 2,
               opacity = .9,
-              highlightOptions = highlightOptions(color = "#C11701", bringToFront = TRUE ),
-              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Percent of SUD in total : ",df_map()@data$percap) %>% lapply(htmltools::HTML)) %>% 
+              highlightOptions = highlightOptions(color = "#91BAA7", bringToFront = TRUE ),
+              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Percent of SUD in county : ",round(df_map()@data$percap,2)) %>% lapply(htmltools::HTML)) %>% 
   addControlGPS(options = gpsOptions(position = "topleft", activate = TRUE, 
                                              autoCenter = TRUE, maxZoom = 200, 
                                              setView = TRUE)) %>% 
@@ -721,26 +801,32 @@ Column
 ![The Sewanee DataLab makes the power of data analytics accessible for the greater good. We accomplish this by training and supporting a new generation of data scientists who work exclusively on social impact projects.The Sewanee DataLab seeks to expand the definition of data science and what it means to be a data scientist by training undergraduate students, academics, and professionals from a wide range of disciplines.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_0607.jpg)
 
 ```{r}
+
+
+
 ```
 
 Column
 ---------------------------------------
 
 ### Delana 
-Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. 
 
-![ ](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_7015.jpg)
+![ Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. ](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_7015.jpg){#id .class }
 
 ### Alan
 
-![Insert text about Alan here.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG-1319.jpg)
+![Alan Kevin Espinoza (he/him) is a student at the University of the South from Houston, Texas. During his time at Sewanee, he has begun his major in Computer Science and Mathematics while working on being part of the 3-2 engineering program where after 3 years at Sewanee, he will do another 2 years studing Data Science at Washington University at St.Luios. On campus he is the President of the fraternity Gamma Sigma Phi, treasurer of the Hispanic Organization of Latino Awarness, helps his peers in the Academic Technology Center, and loves to rock climb on his free time. When he graduates, he intends to start his carrer as a data analyst or software engineer!](/Users/erteam/Desktop/Syndemic Project/syndemic/Dashboard/IMG-1319.jpg)
+
+</p>
 
 ### Jacob
 
 ![Jacob Herron (he/him) C'24 is a student at the University of the South from Rickman, Tennessee. During his time at Sewanee, he has started his major in economics and is working on a minor in mathematics. On campus, he can be found teaching new fencers at Fowler, catching up with friends and professors at Stirlings, or helping his peers at his job in the library. When he gradautes, he intends to pursue a masters degree in economics in hopes of working as an economist.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_5896.jpeg)
 
 ### Amber
+
 ![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG-AMBR.jpeg)
+
 
 ```{r}
 ui<-fluidPage(
