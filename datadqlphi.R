@@ -30,3 +30,8 @@ write.csv(ex, "impdataphi.csv")
 # Disconnect from sqlite
 dbDisconnect(portaldb)
 
+res2<- "SELECT Patient_Zip FROM discharges_phi"
+
+ex2<-dbGetQuery(portaldb,res2)
+ write_csv(ex2, "countycases.csv")
+ 
