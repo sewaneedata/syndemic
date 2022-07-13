@@ -44,30 +44,52 @@ library(forcats)
 library(lubridate)
 library(patchwork)
 library(tidyr)
+library(ggpubr)
 
 pdf(NULL)
-
-setwd("/Users/erteam/Desktop/Syndemic Project/syndemic")
 
 # Reading in data of locations of SEP
 locations<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1sb4P_7-UkcpkmENZ_DpMI45wRY7oItIFbv-0suLmz7U/edit?usp=sharing")
 # Creating a column named label
 locations<-locations %>% mutate(label = paste0("Name : ",name,"<br/>"," Address :",address,"<br/>","Phone :",phone,"<br/>" ) %>% lapply(htmltools::HTML))
 
+# Reading in info of every zip and their state and county
+zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
+
 # Reading in master data
-masterdata<-read_csv("masterdataphi.csv")
+masterdata<-read_csv("/Users/erteam/Desktop/Syndemic Project/masterdataphi.csv")
+
+# Reading in all data with selected columns 
+mdall<-read_csv("/Users/erteam/Desktop/Syndemic Project/mdall.csv")
+
+# Selecting the columns we need
+zips<-zips%>% dplyr::select(zip,state,county)
+
+# Make columns match
+zips<-zips %>% rename(Patient_Zip = zip)
+
+# 
+mdall<-inner_join(mdall,zips, by = "Patient_Zip")%>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN") %>% nrow()
+
+#
+zips<-zips %>% mutate(Patient_Zip = as.numeric(Patient_Zip))
+
+# Mashing together to give everyone a county name
+d<-inner_join(masterdata,zips, by = "Patient_Zip")
+
+# Keep unique ids
+masterdata<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN")
 
 # Reading in population by county data
-popbycounty<-read_csv("SDC_TN_PL20_CountyPopChange.csv") 
+popbycounty<-read_csv("/Users/erteam/Desktop/Syndemic Project/SDC_TN_PL20_CountyPopChange.csv") 
 popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(county = County) %>% mutate(county = paste(county,"County"))
 
 # Reading in data of zip codes and their county name
-zips<-read.csv("countybyid.csv")
+#zips<-read.csv("/Users/erteam/Desktop/Syndemic Project/countybyid.csv")
 
-# Merging master data with county by ids
-masterdata<-inner_join(zips,masterdata, by = "...1" ) %>% filter(state == "TN")
-masterdata<-inner_join(popbycounty,masterdata, by = "county")
+# Making race and etnichity column
 masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
+
 # Adding the real labels to race and ethnicity
 masterdata<-masterdata %>% mutate(Race = ifelse(Race == 1,"White or Caucasian",
                                                 ifelse(Race == 2,"Black or African American",
@@ -148,7 +170,7 @@ df1<-reactive({
     if("All" %in% input$Race ){
       df<-md_phi_jacob %>%
         filter(sud&(endo|sstvi)) %>%
-        group_by(Age_Groups, quarter) %>%
+        group_by(Age_Groups) %>%
         tally()
       return(df)
     }
@@ -156,7 +178,7 @@ df1<-reactive({
       df<-md_phi_jacob %>%
         filter(Race %in% input$Race)%>%
         filter(sud&(endo|sstvi)) %>% 
-        group_by(Age_Groups, quarter) %>% 
+        group_by(Age_Groups ) %>% 
         tally()
       return(df)
     }
@@ -167,7 +189,7 @@ df1<-reactive({
       df<-md_phi_jacob %>%
         filter(Patient_Sex %in% input$gender)%>%
         filter(sud&(endo|sstvi)) %>%
-        group_by(Age_Groups, quarter) %>%
+        group_by(Age_Groups ) %>%
         tally()
       return(df)
     }
@@ -176,7 +198,7 @@ df1<-reactive({
         filter(Race %in% input$Race)%>%
         filter(Patient_Sex %in% input$gender)%>% 
         filter(sud&(endo|sstvi)) %>% 
-        group_by(Age_Groups, quarter) %>% 
+        group_by(Age_Groups ) %>% 
         tally()
       return(df)
     }
@@ -191,7 +213,7 @@ df1b<-reactive({
     if("All" %in% input$Race ){
       df<-md_phi_jacob %>%
         filter((endo|sstvi)) %>%
-        group_by(Age_Groups, quarter) %>%
+        group_by(Age_Groups ) %>%
         tally()
       return(df)
     }
@@ -199,7 +221,7 @@ df1b<-reactive({
       df<-md_phi_jacob %>%
         filter(Race %in% input$Race)%>%
         filter((endo|sstvi)) %>% 
-        group_by(Age_Groups, quarter) %>% 
+        group_by(Age_Groups ) %>% 
         tally()
       return(df)
     }
@@ -210,7 +232,7 @@ df1b<-reactive({
       df<-md_phi_jacob %>%
         filter(Patient_Sex %in% input$gender)%>%
         filter((endo|sstvi)) %>%
-        group_by(Age_Groups, quarter) %>%
+        group_by(Age_Groups ) %>%
         tally()
       return(df)
     }
@@ -219,7 +241,7 @@ df1b<-reactive({
         filter(Race %in% input$Race)%>%
         filter(Patient_Sex %in% input$gender)%>% 
         filter((endo|sstvi)) %>% 
-        group_by(Age_Groups, quarter) %>% 
+        group_by(Age_Groups ) %>% 
         tally()
       return(df)
     }
@@ -438,7 +460,7 @@ radioButtons("gender",
             selected = "Both")
 ```
 
-Column {style="height:140pc;"}
+Column {style="height:120pc;"}
 ---------------------------------------
 
 ### Whole picture
@@ -449,36 +471,83 @@ Column {style="height:140pc;"}
 total2<-masterdata %>% filter((endo|sstvi)) %>% nrow()
   #Plots SUDS and SSTVI or Endo
 
-  b1<-ggplotly(ggplot(data = md_phi_jacobnf %>%
+renderPlot({
+
+d1<- ggplot() +
+  geom_point(data = md_phi_jacobnf %>%
                                filter(sud&(sstvi|endo)) %>%
                                group_by(quarter) %>%
                                tally(),
        aes(x = quarter,
-           y = n/total)) +
-  geom_point(color = '#1B365D') +
-  geom_line(color = '#1B365D') +
-  labs(title = 'Trends in Hospitalization for Substance Use  and all SSTVIs or Endocarditis',
-       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-       caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients')+ expand_limits(y = 0))
-  
-  #Plots SUDS and SSTVI or Endo
-b2<-ggplotly(ggplot(data = md_phi_jacobnf %>%
+           y = n/total),color = '#1B365D') +
+  geom_line(data = md_phi_jacobnf %>%
+                               filter(sud&(sstvi|endo)) %>%
+                               group_by(quarter) %>%
+                               tally(),
+       aes(x = quarter,
+           y = n/total),color = '#1B365D') +
+    geom_point(data = md_phi_jacobnf %>%
                                filter(sstvi|endo) %>%
                                group_by(quarter) %>%
                                tally(),
        aes(x = quarter,
-           y = n/total2 )) +
-  geom_point(color = '#1B365D') +
-  geom_line(color = '#1B365D') +
-  labs(title = 'Trends in Hospitalization for all SSTVIs or Endocarditis',
+           y = n/total2 ), color = '#91BAA7')+
+    geom_line(data = md_phi_jacobnf %>%
+                               filter(sstvi|endo) %>%
+                               group_by(quarter) %>%
+                               tally(),
+       aes(x = quarter,
+           y = n/total2 ), color = '#91BAA7', linetype = "dotdash")+
+  labs(title = 'Percent of Hospitalization who have a infection by quarter',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
-       y = 'Total Patients')+ expand_limits(y = 0))
+       y = 'Total Patients')+ 
+    expand_limits(y = 0)
+ 
+ groups = c('SUDs Cases','Total Cases')
 
-subplot(b1,b2,shareY=TRUE)
+#masterdata %>% filter(sud & (endo | sstvi)) %>% tally() #comes out to 9872
+#masterdata %>% filter(sud) %>% tally() #comes out to 79323
+# SUD = 9872 / 79323 == percentage of sud cases with endo or sstivi
+#masterdata %>% filter(endo|sstvi) %>% tally()  #comes out to 201725
+#mdall = 4,890,102
+#Total-Pop = 191830 / 5379105 == percentage of total cases with endo or sstvi
+
+percs = c((9872 / 79323) * 100, (201725 / 4890102) * 100)
+
+percent_df = data.frame(groups, percs)
+
+d2<- ggplot(data = percent_df,
+       aes(x = groups, y = percs, fill = groups)) +
+  geom_col() +
+    labs(title = 'Percentage of Hospitalization Groups Diagnosed with SSTVIs or Endocarditis',
+       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
+       caption = 'End the Syndemic | DataLab 2022',
+       y = 'Percentage of Group with SSTVIs or Endo',
+       x = 'Hospitalization Group') +
+  scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
+  theme(legend.position = '0')
+  
+ggarrange(d1,d2,labels = c("A", "B"), ncol = 2, nrow = 1)
+
+})
+#   #Plots SUDS and SSTVI or Endo
+# b2<-ggplotly(ggplot(data = md_phi_jacobnf %>%
+#                                filter(sstvi|endo) %>%
+#                                group_by(quarter) %>%
+#                                tally(),
+#        aes(x = quarter,
+#            y = n/total2 )) +
+#   geom_point(color = '#1B365D') +
+#   geom_line(color = '#1B365D') +
+#   labs(title = 'Percent of Hospitalization for all SSTVIs or Endocarditis by quarter',
+#        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
+#        caption = 'End the Syndemic | DataLab 2022',
+#        x = 'Yearly Quarter',
+#        y = 'Total Patients')+ expand_limits(y = 0))
+# 
+# subplot(b1,b2,shareY=TRUE)
 
 ```
 
@@ -489,43 +558,73 @@ subplot(b1,b2,shareY=TRUE)
 total3<-md_phi_jacob%>% filter(sud&(endo|sstvi)) %>% nrow()
 total4<-md_phi_jacob%>% filter((endo|sstvi)) %>% nrow()
 
-renderPlotly({
+renderPlot({
   
   #Plots SUDS and SSTVI or Endo
-c1<-ggplotly(ggplot(df1(),
-       aes(x = quarter,
+c1<-ggplot(df1(),
+       aes(x = Age_Groups,
            y = n/total3*100,
-           color = Age_Groups)) +
-  geom_point() +
-  geom_line() +
+           fill = Age_Groups)) +
+  geom_col() +
+    geom_text(aes(label = paste(round(n/total3*100, 2),"%")),vjust = -.3)+
   labs(title = 'Trends in Hospitalization for Substance Use  and all SSTVIs or Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7')))
+  scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
+    ylim(0,35)
   
-c2<-ggplotly(ggplot(df1b(),
-       aes(x = quarter,
+c2<-ggplot(df1b(),
+       aes(x = Age_Groups,
            y = n/total4*100,
-           color = Age_Groups)) +
-  geom_point() +
-  geom_line() +
+           fill = Age_Groups)) +
+  geom_col() +
+    geom_text(aes(label = paste(round(n/total4*100, 2),"%")), vjust = -.3)+
   labs(title = 'Trends in Hospitalization for all SSTVIs or Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
        x = 'Yearly Quarter',
        y = 'Total Patients') +
-  scale_color_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7')))
+  scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
+    ylim(0,35)
 
-subplot(c1,style(c2, showlegend=F),shareY=TRUE) %>% layout(title ='Trends in Hospitalization by age group',
-                                                           annotations = list(
-                                                             list(x=.2,y=.1,text ='Trends in Hospitalization for Substance Use  and all SSTVIs or Endocarditis'),
-                                                             list(x=.8,y=.1,text ='Trends in Hospitalization for all SSTVIs or Endocarditis')))
+ggarrange(c1,c2,labels = c("A","B"), ncol = 2, nrow = 1)
+
+#subplot(c2,style(c1, showlegend=F),shareY=TRUE) %>% layout(title ='Trends in Hospitalization by age group')
 
 })
 
 ```
+
+<!-- ### PERCENT CHANCE OF INFECTION -->
+<!-- ```{r} -->
+<!-- groups = c('SUDs Cases','Total Cases') -->
+
+<!-- #masterdata %>% filter(sud & (endo | sstvi)) %>% tally() #comes out to 9872 -->
+<!-- #masterdata %>% filter(sud) %>% tally() #comes out to 79323 -->
+<!-- # SUD = 9872 / 79323 == percentage of sud cases with endo or sstivi -->
+<!-- #masterdata %>% filter(endo|sstvi) %>% tally()  #comes out to 201725 -->
+<!-- #mdall = 4,890,102 -->
+<!-- #Total-Pop = 191830 / 5379105 == percentage of total cases with endo or sstvi -->
+
+<!-- percs = c((9872 / 79323) * 100, (201725 / 4890102) * 100) -->
+
+<!-- percent_df = data.frame(groups, percs) -->
+
+<!-- ggplot(data = percent_df, -->
+<!--        aes(x = groups, y = percs, fill = groups)) + -->
+<!--   geom_col() + -->
+<!--     labs(title = 'Percentage of Hospitalization Groups Diagnosed with SSTVIs or Endocarditis', -->
+<!--        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient', -->
+<!--        caption = 'End the Syndemic | DataLab 2022', -->
+<!--        y = 'Percentage of Group with SSTVIs or Endo', -->
+<!--        x = 'Hospitalization Group') + -->
+<!--   scale_fill_manual(values = c('#91BAA7', '#1B365D')) + -->
+<!--   theme(legend.position = '0') -->
+
+
+<!-- ``` -->
 
 ### TRENDS
 
@@ -716,28 +815,28 @@ subplot(a2,style(a1, showlegend=F))
 
 ```
 
-### Graph 3
+<!-- ### Graph 3 -->
 
-```{r, echo=FALSE}
+<!-- ```{r, echo=FALSE} -->
 
-#Creates a list of SUDs & ENDO or SSTVI for the ggvenn package to read
-syndemic_list <- 
-  list('SUDs' = which(masterdata$sud), 
-       'SSTVIs or Endocarditis' = which(masterdata$endo | masterdata$sstvi))
+<!-- #Creates a list of SUDs & ENDO or SSTVI for the ggvenn package to read -->
+<!-- syndemic_list <-  -->
+<!--   list('SUDs' = which(masterdata$sud),  -->
+<!--        'SSTVIs or Endocarditis' = which(masterdata$endo | masterdata$sstvi)) -->
 
-#Creates a venn diagram showing overlap in SUDS and syndemic related ICD-10s
-ggVennDiagram(syndemic_list,
-              label_size = 4,
-              label_alpha = 0.3,
-              label = c('count')) +
-  theme(legend.position = '0') +
-  labs(title = 'Hospitalization overlap for substance use and infectious sequela of interest',
-       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-       caption = 'End the Syndemic | DataLab 2022') +
-  scale_color_manual(values = c('black','black')) +
-  scale_fill_gradientn(colors = c('#555555', '#91BAA7', '#555555', '#1B365D'))
+<!-- #Creates a venn diagram showing overlap in SUDS and syndemic related ICD-10s -->
+<!-- ggVennDiagram(syndemic_list, -->
+<!--               label_size = 4, -->
+<!--               label_alpha = 0.3, -->
+<!--               label = c('count')) + -->
+<!--   theme(legend.position = '0') + -->
+<!--   labs(title = 'Hospitalization overlap for substance use and infectious sequela of interest', -->
+<!--        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient', -->
+<!--        caption = 'End the Syndemic | DataLab 2022') + -->
+<!--   scale_color_manual(values = c('black','black')) + -->
+<!--   scale_fill_gradientn(colors = c('#555555', '#91BAA7', '#555555', '#1B365D')) -->
 
-```
+<!-- ``` -->
 
 ### Graphs
 

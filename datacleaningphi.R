@@ -12,6 +12,23 @@ codes <- read_csv("./syndemic/codes.csv")
 data<-read_csv("impdataphi.csv")
 #####################################################################
 # New Correct way of cleaning data-----------------------------------
+# Clean more, get rid of some more columns
+data<-data %>% select(-starts_with("HCPC_Rate"),
+                            -Tot_Charges_Summed,
+                            -Tot_Charges_Analysis,
+                            -Tot_Charges_Recorded,
+                            -Obs_Unit_Flag,
+                            -CostWt,
+                            -starts_with("Proc"),
+                            -Bill_Number,
+                            -Record_Seq_Num,
+                            -Form_Type,
+                            -Accident_Code,
+                            -Admit_Diag_Cd
+)
+
+write_csv(data, "mdall.csv")
+
 # Making all diagnosis into one column!
 # For all data change all trainpl into data
 trainpl<-data %>% 
@@ -44,20 +61,20 @@ fidv<-unique(fidv)
 # Get person with ids that we got and care about
 cleands<-data %>% filter( ...1 %in% fidv)
 
-# Clean more, get rid of some more columns
-cleands<-cleands %>% select(-starts_with("HCPC_Rate"),
-                            -Tot_Charges_Summed,
-                            -Tot_Charges_Analysis,
-                            -Tot_Charges_Recorded,
-                            -Obs_Unit_Flag,
-                            -CostWt,
-                            -starts_with("Proc"),
-                            -Bill_Number,
-                            -Record_Seq_Num,
-                            -Form_Type,
-                            -Accident_Code,
-                            -Admit_Diag_Cd
-)
+# # Clean more, get rid of some more columns
+# cleands<-cleands %>% select(-starts_with("HCPC_Rate"),
+#                             -Tot_Charges_Summed,
+#                             -Tot_Charges_Analysis,
+#                             -Tot_Charges_Recorded,
+#                             -Obs_Unit_Flag,
+#                             -CostWt,
+#                             -starts_with("Proc"),
+#                             -Bill_Number,
+#                             -Record_Seq_Num,
+#                             -Form_Type,
+#                             -Accident_Code,
+#                             -Admit_Diag_Cd
+# )
 # Add boolean value for SUD------------------------------------------
 syndata<-cleands
 

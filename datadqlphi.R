@@ -8,7 +8,7 @@ library(data.table)
 
 setwd("~/Desktop/Syndemic Project")
 # Reading in sqlite
-portaldb <- dbConnect(SQLite(), "discharges_phi")
+portaldb <- dbConnect(SQLite(), "copy_discharges_phi")
 
 # List tables in database
 dbListTables(portaldb)
@@ -30,8 +30,4 @@ write.csv(ex, "impdataphi.csv")
 # Disconnect from sqlite
 dbDisconnect(portaldb)
 
-res2<- "SELECT Patient_Zip FROM discharges_phi"
-
-ex2<-dbGetQuery(portaldb,res2)
- write_csv(ex2, "countycases.csv")
  
