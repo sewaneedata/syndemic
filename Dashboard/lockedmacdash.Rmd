@@ -27,6 +27,7 @@ output:
 
 ```{r setup, include=FALSE}
 
+# Loading in necessary libraries
 library(flexdashboard)
 library(shiny)
 library(tidyverse)
@@ -50,28 +51,35 @@ pdf(NULL)
 
 # Reading in data of locations of SEP
 locations<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1sb4P_7-UkcpkmENZ_DpMI45wRY7oItIFbv-0suLmz7U/edit?usp=sharing")
+
 # Creating a column named label
 locations<-locations %>% mutate(label = paste0("Name : ",name,"<br/>"," Address :",address,"<br/>","Phone :",phone,"<br/>" ) %>% lapply(htmltools::HTML))
 
 # Reading in info of every zip and their state and county
-zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
+<<<<<<< HEAD
+zips<-readr::read_csv("D:/DataLab/syndemic/zip_code_database.csv")
+=======
+# zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
+>>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
 
 # Reading in master data
-masterdata<-read_csv("/Users/erteam/Desktop/Syndemic Project/masterdataphi.csv")
+masterdata<-read_csv("D:/DataLab/syndemic/masterdata.csv")
 
-# Reading in all data with selected columns 
-# mdall<-read_csv("/Users/erteam/Desktop/Syndemic Project/mdall.csv")
-# 
+{
+# How we made totbyprimarypayer
 # train<-mdall %>% mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
 #                       'Government Funded', 
 #                       'Privately Funded')) %>% group_by(gov) %>% summarize(total = sum(Total_Tot_Chrg, na.rm = TRUE)) 
 # write_csv(train,"totbyprimarypayer.csv")
+}
+
 # Selecting the columns we need
-zips<-zips%>% dplyr::select(zip,state,county)
+# zips<-zips%>% dplyr::select(zip,state,county)
 
 # Make columns match
-zips<-zips %>% rename(Patient_Zip = zip)%>% mutate(Patient_Zip = as.numeric(Patient_Zip))
+# zips<-zips %>% rename(Patient_Zip = zip)%>% mutate(Patient_Zip = as.numeric(Patient_Zip))
 
+{
 # Creating the casesbycounty csv
 # Getting total hospital cases in tn
 # mdallnum<-inner_join(mdall,zips, by = "Patient_Zip")%>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN") %>% nrow()
@@ -79,66 +87,64 @@ zips<-zips %>% rename(Patient_Zip = zip)%>% mutate(Patient_Zip = as.numeric(Pati
 # Getting total cases by county
 # mdall<-inner_join(mdall,zips, by = "Patient_Zip")%>% distinct(...1, .keep_all = TRUE) %>% filter(state == "TN") %>% dplyr::group_by(county) %>% tally()
 # write_csv(mdall,"casescycounty.csv")
+}
 
- mdall<-read_csv("/Users/erteam/Desktop/Syndemic Project/casescycounty.csv")
+# Reading in data that shoes total number of total cases for each county
+ mdall<-read_csv("D:/DataLab/syndemic/casescycounty.csv")
 
-#
-totbyprimarypayer<-read.csv("/Users/erteam/Desktop/Syndemic Project/totbyprimarypayer.csv")
-
-# zips<-zips %>% mutate(Patient_Zip = as.numeric(Patient_Zip))
+# reading in necessary data, where everyone is broken down by government funded or privately
+totbyprimarypayer<-read.csv("D:/DataLab/syndemic/totbyprimarypayer.csv")
 
 # Mashing together to give everyone a county name
-d<-inner_join(masterdata,zips, by = "Patient_Zip")
+# d<-inner_join(masterdata,zips, by = "Patient_Zip")
 
 # Keep unique ids
-masterdata<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN")
+# masterdata<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN")
 
 # Reading in population by county data
-popbycounty<-read_csv("/Users/erteam/Desktop/Syndemic Project/SDC_TN_PL20_CountyPopChange.csv") 
+popbycounty<-read_csv("D:/DataLab/syndemic/SDC_TN_PL20_CountyPopChange.csv") 
 popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(county = County) %>% mutate(county = paste(county,"County"))
 
-# Reading in data of zip codes and their county name
-#zips<-read.csv("/Users/erteam/Desktop/Syndemic Project/countybyid.csv")
-
 # Making race and etnichity column
-masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
+# masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
 
-# Adding the real labels to race and ethnicity
-masterdata<-masterdata %>% mutate(Race = ifelse(Race == 1,"White or Caucasian",
-                                                ifelse(Race == 2,"Black or African American",
-                                                       ifelse(Race == 3,"Other Race",
-                                                              ifelse(Race == 4,"Other Race",
-                                                                     ifelse(Race == 5,"Other Race","Unknown Race"))))))
-#
-masterdata<-masterdata %>% mutate(Ethnicity = ifelse(Ethnicity == 1,"Hispanic Origin",
-                                                     ifelse(Ethnicity ==3,"Not Hispanic Origin","Hispanic Origin Unknown")))
+# # Adding the real labels to race and ethnicity
+# masterdata<-masterdata %>% mutate(Race = ifelse(Race == 1,"White or Caucasian",
+#                                                 ifelse(Race == 2,"Black or African American",
+#                                                        ifelse(Race == 3,"Other Race",
+#                                                               ifelse(Race == 4,"Other Race",
+#                                                                      ifelse(Race == 5,"Other Race","Unknown Race"))))))
+# 
+# masterdata<-masterdata %>% mutate(Ethnicity = ifelse(Ethnicity == 1,"Hispanic Origin",
+#                                                      ifelse(Ethnicity ==3,"Not Hispanic Origin","Hispanic Origin Unknown")))
 #
 
 # Reading in spatial polygon data for map
-s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county") 
+s <- shapefile("D:/DataLab/syndemic/tl_2021_us_county") 
+# Filter for just Tennessee polygons
 boundaries <-subset(s, s@data$STATEFP == "47")
 
 # Making color pallet based on SUD in county
-paldata<-masterdata %>% filter(sud) %>% group_by(county) %>% summarise(total = n())
-
-# Making vector of total number of cases by county.
-
+# paldata<-masterdata %>% filter(sud&(endo|sstvi)) %>% group_by(county) %>% summarise(total = n())
+# write_csv(paldata,"sudcasesbycounty.csv")
+paldata<-read_csv("/Users/erteam/Desktop/Syndemic Project/sudcasesbycounty.csv")
 
 # Adding county total to spatial data frame
 boundaries<-geo_join(boundaries, paldata, by_sp ="NAMELSAD" , by_df ="county")
+# Adding current population of each county
 boundaries<-geo_join(boundaries, popbycounty, by_sp = "NAMELSAD", by_df ="county")
+# Adding total cases for each county
 boundaries<-geo_join(boundaries, mdall, by_sp="NAMELSAD", by_df = "county")
+# Creating two new columns where each are percents but are different meaning
 boundaries@data<-boundaries@data %>% mutate(percapt = (total/Population.2020)*100)
 boundaries@data<-boundaries@data %>% mutate(percap = (total/n)*100)
-
-mean(boundaries@data$percap)
 
 # Making palette for shading of map
 pal <- colorNumeric(
   palette = "Blues",
   domain = boundaries@data$percap)
 
-#
+# Making the map marker
 syringes <- makeAwesomeIcon(
   icon = "hospital user",
   iconColor = "#FAFBFE",
@@ -165,10 +171,12 @@ md_phi_jacobnf <-masterdata
 
 ```
 
+
+
 ```{r reactive}
 
 df_map<-reactive({
-  
+
   if("All" %in% input$county_select){
     return(boundaries)
   }
@@ -180,434 +188,107 @@ df_map<-reactive({
 
 # for sud and endo or sstvi
 df1<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race ){
+
       df<-md_phi_jacob %>%
         filter(sud&(endo|sstvi)) %>%
         group_by(Age_Groups) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(sud&(endo|sstvi)) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sud&(endo|sstvi)) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sud&(endo|sstvi)) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
 })
-
-# for sud and endo or sstvi
+ 
+# # for sud and endo or sstvi
 df1b<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race ){
+
       df<-md_phi_jacob %>%
         filter((endo|sstvi)) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter((endo|sstvi)) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter((endo|sstvi)) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter((endo|sstvi)) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
 
 # for sud and endo
 df2<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(sud&endo) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(sud&endo) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sud&endo) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sud&endo) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+      
+    })
 
 # forendo
 df2b<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(endo) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(endo) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(endo) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(endo) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
+
 
 #for sud and osto
 df3<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(sud&ost) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(sud&ost) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sud&ost) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sud&ost) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
+
 
 #for sud and osto
 df3b<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(ost) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(ost) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(ost) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(ost) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
+
 
 # For sud and sepsis
 df4<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(sud&sepsis) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
-        filter(sud&sepsis) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sud&sepsis) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sud&sepsis) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
 
 df4b<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(sepsis) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race,Ethnicity %in% input$eth)%>%
-        filter(sepsis) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sepsis) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sepsis) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
 
 #for sud and sstvi
 df5<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(sud&sstvi) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(sud&sstvi) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sud&sstvi) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sud&sstvi) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
 
 df5b<-reactive({
-  
-  if(input$gender == "Both"){
-    
-    if("All" %in% input$Race){
+
       df<-md_phi_jacob %>%
         filter(sstvi) %>%
         group_by(Age_Groups ) %>%
         tally()
       return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(sstvi) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-    
-  }
-  else{
-    if("All" %in% input$Race){
-      df<-md_phi_jacob %>%
-        filter(Patient_Sex %in% input$gender)%>%
-        filter(sstvi) %>%
-        group_by(Age_Groups ) %>%
-        tally()
-      return(df)
-    }
-    else{
-      df<-md_phi_jacob %>%
-        filter(Race %in% input$Race)%>%
-        filter(Patient_Sex %in% input$gender)%>% 
-        filter(sstvi) %>% 
-        group_by(Age_Groups ) %>% 
-        tally()
-      return(df)
-    }
-  }
-})
+    })
 
 ```
-
 Home Page  <!--{data-orientation=rows} -->
 =======================================
 
@@ -619,12 +300,18 @@ Column
 ---------------------------------------
 <img src="/Users/erteam/Desktop/Syndemic Project/syndemic/Glossary.png" width = 100%>
 
-Doom 
+Relative Risk
 =======================================
+
+Sidebar {.sidebar}
+--------------------------------------- 
+<p>**Description: **<br>*The graphs on this page contrast the prevalence of the four focal health conditions between the hospital population diagnosed with SUD and the overall hospital population.*<p>
+<p>**Caption:**<br>*The graph on the left displays the prevalence of all four health conditions in each hospital population.*<p>
+<p>**Caption:**<br>*The tabular graphs on the right break down the risk by disease.*<p>
 
 Column
 ---------------------------------------
-### Base case
+### Base
 
 ```{r}
 
@@ -645,20 +332,18 @@ renderPlot({
 ggplot(data = percent_df,
        aes(x = groups, y = percs, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs,2),"%")),vjust = -.3)+
-    labs(title = 'Percentage of Hospitalization Groups Diagnosed with SSTVIs or Endocarditis',
+    geom_text(aes(label = paste(round(percs,2),"%")), size = 8,vjust = -.3)+
+    labs(title = 'Percentage of Hospitalization Groups Diagnosed with SSTVI or Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Group with SSTVIs or Endo',
+       y = 'Percentage of Group with SSTVI or Endocarditis',
        x = 'Hospitalization Group') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0')
+  theme(legend.position = '0', text = element_text(size = 20))+
+    expand_limits(y =c(0,12.5))
 
 })
 ```
-
-<!-- Include this text somehow # For all Tennessee hospitalizations, about 4% of all cases were with endocarditis or any SSTVI, however, for people with substance use codes about 12% of those were with endocarditis or any SSTVI. Compared to all hospitalizations, the relative risk of having endocarditis or any SSTVI for Tennesseans with substance use codes is estimated at 3! -->
-
 
 Column {.tabset .tabset-fade}
 ---------------------------------------
@@ -683,19 +368,20 @@ renderPlot({
 ggplot(data = percent_df2,
        aes(x = groups, y = percs2, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs2,2),"%")),vjust = -.3)+
+    geom_text(aes(label = paste(round(percs2,2),"%")), size = 8,vjust = -.3)+
     labs(title = 'Percentage of Hospitalization Groups Diagnosed with Endocarditis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Group with Endo',
+       y = 'Percentage of Group with Endocarditis',
        x = 'Hospitalization Group') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0')
+  theme(legend.position = '0', text = element_text(size = 20))+
+    ylim(0,12)
 
 })
 ```
 
-### Ostomyelitis
+### Osteomyelitis
 
 ```{r}
 
@@ -712,17 +398,18 @@ percs3 = c((ost/sud) * 100, (ostall/mdall) * 100)
 percent_df3 = data.frame(groups, percs3)
 
 renderPlot({
-ggplot(data = percent_df,
+ggplot(data = percent_df3,
        aes(x = groups, y = percs3, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs3,2),"%")),vjust = -.3)+
-    labs(title = 'Percentage of Hospitalization Groups Diagnosed with Ostomyelitis',
+    geom_text(aes(label = paste(round(percs3,2),"%")), size = 8,vjust = -.3)+
+    labs(title = 'Percentage of Hospitalization Groups Diagnosed with Osteomyelitis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Group with Endo',
+       y = 'Percentage of Group with Osteomyelitis',
        x = 'Hospitalization Group') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0')
+  theme(legend.position = '0', text = element_text(size = 20))+
+    ylim(0,12)
 
 })
 ```
@@ -733,28 +420,30 @@ ggplot(data = percent_df,
 
  groups = c('SUDs Cases','Total Cases')
 
-sstvi<-masterdata %>% filter(sud&sstvi ) %>% nrow()
+sstvi<-masterdata %>% filter(sud&sstvi)%>% nrow()
 sud<-masterdata %>% filter(sud) %>% nrow()
 
 sstviall<-masterdata %>% filter(sstvi) %>% nrow()
 mdall<-4890102
 
-percs4 = c((sstvi/sud) * 100, (sstviall/mdall) * 100)
+percs4 = c((sstvi/sud)*100, (sstviall/mdall)*100)
 
 percent_df4 = data.frame(groups, percs4)
 
 renderPlot({
+  
 ggplot(data = percent_df4,
        aes(x = groups, y = percs4, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs4,2),"%")),vjust = -.3)+
+    geom_text(aes(label = paste(round(percs4,2),"%")), size = 8,vjust = -.3)+
     labs(title = 'Percentage of Hospitalization Groups Diagnosed with SSTVI',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Group with Endo',
+       y = 'Percentage of Group with SSTVI',
        x = 'Hospitalization Group') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0')
+  theme(legend.position = '0', text = element_text(size = 20))+
+    ylim(0,12.2)
 
 })
 ```
@@ -779,91 +468,33 @@ renderPlot({
 ggplot(data = percent_df5,
        aes(x = groups, y = percs5, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs5,2),"%")),vjust = -.3)+
+    geom_text(aes(label = paste(round(percs5,2),"%")), size = 8,vjust = -.3)+
     labs(title = 'Percentage of Hospitalization Groups Diagnosed with Sepsis',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Group with Endo',
+       y = 'Percentage of Group with Sepsis',
        x = 'Hospitalization Group') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0')
+  theme(legend.position = '0', text = element_text(size = 20))+
+    ylim(0,12)
 
 })
 ```
 
-Important Visuals {data-orientation=rows}
+Data by Age Group {data-orientation=rows}
 =======================================
-<!-- {style="position:relative;"} -->
 
 Sidebar {.sidebar}
----------------------------------------
-###
+--------------------------------------- 
 
-```{r sidebar}
-
-race<-masterdata %>% pull(Race) %>% unique() %>% sort()
-
-radioButtons("Race",
-            "Choose Race",
-            choices = c("All",race),
-            selected = "All")
-
-gender<-masterdata %>% filter(!Patient_Sex=="9") %>%  pull(Patient_Sex) %>% unique() %>% sort()
-
-radioButtons("gender",
-            "Choose Gender",
-            choices = c("Both",gender),
-            selected = "Both")
-```
+<p>**Caption:**<br>*The graphs on the upper half display the percentages of each age group that has contracted at least one of the four health conditions.*<p>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<p>**Caption:**<br>*The tabular graphs on the lower half of the page break down the risk by disease.*<p>
 
 Row                                  
 ---------------------------------------
-<!--Column {style="height:140pc;"}-->
-<!-- ### Whole picture -->
 
-<!-- ```{r} -->
-
-<!--   total<-masterdata%>% filter(sud&(endo|sstvi)) %>% nrow() -->
-<!-- total2<-masterdata %>% filter((endo|sstvi)) %>% nrow() -->
-<!--   #Plots SUDS and SSTVI or Endo -->
-
-<!-- renderPlot({ -->
-
-<!-- d1<- ggplot() + -->
-<!--   geom_point(data = md_phi_jacobnf %>% -->
-<!--                                filter(sud&(sstvi|endo)) %>% -->
-<!--                                group_by(quarter) %>% -->
-<!--                                tally(), -->
-<!--        aes(x = quarter, -->
-<!--            y = n/total),color = '#1B365D') + -->
-<!--   geom_line(data = md_phi_jacobnf %>% -->
-<!--                                filter(sud&(sstvi|endo)) %>% -->
-<!--                                group_by(quarter) %>% -->
-<!--                                tally(), -->
-<!--        aes(x = quarter, -->
-<!--            y = n/total),color = '#1B365D') + -->
-<!--     geom_point(data = md_phi_jacobnf %>% -->
-<!--                                filter(sstvi|endo) %>% -->
-<!--                                group_by(quarter) %>% -->
-<!--                                tally(), -->
-<!--        aes(x = quarter, -->
-<!--            y = n/total2 ), color = '#91BAA7')+ -->
-<!--     geom_line(data = md_phi_jacobnf %>% -->
-<!--                                filter(sstvi|endo) %>% -->
-<!--                                group_by(quarter) %>% -->
-<!--                                tally(), -->
-<!--        aes(x = quarter, -->
-<!--            y = n/total2 ), color = '#91BAA7', linetype = "dotdash")+ -->
-<!--   labs(title = 'Percent of Hospitalization who have a infection by quarter', -->
-<!--        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient', -->
-<!--        caption = 'End the Syndemic | DataLab 2022', -->
-<!--        x = 'Yearly Quarter', -->
-<!--        y = 'Total Patients')+  -->
-<!--     expand_limits(y = 0) -->
-<!-- # subplot(b1,b2,shareY=TRUE) -->
-
-<!-- ``` -->
-### Whole picture by age
+### Visual
 
 ```{r}
 
@@ -878,30 +509,33 @@ c1<-ggplot(df1(),
            y = n/total3*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total3*100, 2),"%")),vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Substance Use and all SSTVIs or Endocarditis',
+    geom_text(aes(label = paste(round(n/total3*100, 2),"%")), size = 6,vjust = -.3)+
+  labs(title = 'Percentages for SUD and all SSTVIs or Endocarditis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
     ylim(0,35)+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))
   
-c2<-ggplot(df1b(),
+c2<-ggplot(data=md_phi_jacob %>%
+        filter((endo|sstvi)) %>%
+        group_by(Age_Groups ) %>%
+        tally(),
        aes(x = Age_Groups,
            y = n/total4*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total4*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for all SSTVIs or Endocarditis',
+    geom_text(aes(label = paste(round(n/total4*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for all SSTVIs or Endocarditis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
     ylim(0,35)+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))
 
 ggarrange(c1,c2,labels = c("A","B"), ncol = 2, nrow = 1)
 
@@ -909,12 +543,9 @@ ggarrange(c1,c2,labels = c("A","B"), ncol = 2, nrow = 1)
 
 ```
 
-<!-- #Include this text somehow # For all Tennessee hospitalizations, about 4% of all cases were with endocarditis or any SSTVI, however, for people with substance use codes about 12% of those were with endocarditis or any SSTVI. Compared to all hospitalizations, the relative risk of having endocarditis or any SSTVI for Tennesseans with substance use codes is estimated at 3! -->
-<!-- ``` -->
-
 Row {.tabset .tabset-fade style="height:60pc;"}
 ---------------------------------------
-<!-- {style="height:140pc;"} -->
+
 ### Endocarditis
 
 ```{r}
@@ -926,32 +557,34 @@ renderPlot({
 #Plots SUDS and endo
   b1<-ggplot(df2(),
       aes(x = Age_Groups,
-          y = n/total5,
+          y = n/total5*100,
           fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total5*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Substance Use  and Endocarditis',
+    geom_text(aes(label = paste(round(n/total5*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for SUD and Endocarditis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))+
+  ylim(0,45)
   
   #Plots SUDS and osteo
     b2<-ggplot(data = df2b(),
        aes(x = Age_Groups,
-           y = n/total6,
+           y = n/total6*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total6*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Endocarditis',
+    geom_text(aes(label = paste(round(n/total6*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for all Endocarditis cases by Age Group ',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))+
+  ylim(0,45)
 
 ggarrange(b1,b2,ncol=2,nrow=1)
  })
@@ -966,31 +599,33 @@ renderPlot({
   
     b3<-ggplot(data = df3(),
        aes(x = Age_Groups,
-           y = n/total7,
+           y = n/total7*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total7*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Substance Use  and Ostemyelitis',
+    geom_text(aes(label = paste(round(n/total7*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for SUD and Osteomyelitis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))+
+  ylim(0,45)
     
       b4<-ggplot(data = df3b(),
        aes(x = Age_Groups,
-           y = n/total8,
+           y = n/total8*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total8*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Ostemyelitis',
+    geom_text(aes(label = paste(round(n/total8*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for all Osteomyelitis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")    
+  theme(legend.position = "none", text = element_text(size = 20))+
+  ylim(0,45)    
     
     ggarrange(b3,b4,ncol=2,nrow=1)
 })
@@ -1006,38 +641,40 @@ renderPlot({
   
 b5<-ggplot(data = df4(),
        aes(x = Age_Groups,
-           y = n/total9,
+           y = n/total9*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total9*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Substance Use  and Sepsis',
+    geom_text(aes(label = paste(round(n/total9*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for SUD and Sepsis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))+
+  ylim(0,45)
 
 b6<-ggplot(data = df4b(),
        aes(x = Age_Groups,
-           y = n/total10,
+           y = n/total10*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total10*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Sepsis',
+    geom_text(aes(label = paste(round(n/total10*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for all Sepsis cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")
+  theme(legend.position = "none", text = element_text(size = 20))+
+  ylim(0,45)
 
 ggarrange(b5,b6,ncol=2,nrow=1)
 })
   
 ```
 
-### SSTVI's
+### SSTVIs
 
 ```{r}
 renderPlot({
@@ -1048,32 +685,32 @@ renderPlot({
   #Plots SUDS and sstvi
 b7<-ggplot(data = df5(),
        aes(x = Age_Groups,
-           y = n/total12,
+           y = n/total12*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total12*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for Substance Use  and all SSTVIs',
+    geom_text(aes(label = paste(round(n/total12*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = 'Percentages for SUD  and all SSTVIs cases by Age Group',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")+
+  theme(legend.position = "none", text = element_text(size = 20))+
   ylim(0,45)
 
 b8<-ggplot(data = df5b(),
        aes(x = Age_Groups,
-           y = n/total13,
+           y = n/total13*100,
            fill = Age_Groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(n/total13*100, 2),"%")), vjust = -.3)+
-  labs(title = 'Trends in Hospitalization for all SSTVIs',
+    geom_text(aes(label = paste(round(n/total13*100, 2),"%")), size = 6, vjust = -.3)+
+  labs(title = "Percentages for all SSTVIs cases by Age Group",
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       x = 'Yearly Quarter',
-       y = 'Total Patients') +
+       x = 'Age Group',
+       y = 'Percentages') +
   scale_fill_manual(values = c('#C11701', '#B1B1B1', '#1B365D', '#9A77C7', '#91BAA7'))+
-  theme(legend.position = "none")+
+  theme(legend.position = "none", text = element_text(size = 20))+
   ylim(0,45)
 
 ggarrange(b7,b8,ncol=2,nrow=1)
@@ -1084,50 +721,20 @@ ggarrange(b7,b8,ncol=2,nrow=1)
 Visualizing Cost {data-orientation=rows}
 =======================================
 
-Row {.tabset .tabset-fade}
+Sidebar {.sidebar}
+--------------------------------------- 
+<p>**Caption: **<br>*The graph on the top shows the primary payer for the four focal health conditions with no regard to a SUD diagnosis.*<p>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<p>**Caption: **<br>*The graph on the bottom left shows the percentage of SUD cases that were covered primarily by a government payer or a private payer. *<p>
+<p>**Caption: **<br>*The graph on the bottom right shows the percentage of all cases that were covered primarily by a government payer or a private payer.*<p>
+
+
+Row
 ---------------------------------------
 
-### Graph 1
+### Cost by Payer
 
 ```{r}
-
-# #Sets up an object that groups by primary payer, 
-# #sums the total costs each payer paid for syndemic patients,
-# #only saves the top 5,
-# #and then adds a new column, gov, for if it was funded by the government or not
-# md_top_payers <- masterdata %>% 
-#   filter(sud, endo | sstvi) %>% 
-#   group_by(Primary_Payer_Class_Cd) %>%
-#   summarise(total = sum(Total_Tot_Chrg)) %>% 
-#   arrange(desc(total)) %>% 
-#   head(5) %>% 
-#   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('M','K','J', '8'), TRUE, FALSE))
-# 
-# #Renames the primary payers to their common name
-# md_top_payers$Primary_Payer_Class_Cd <- fct_recode(md_top_payers$Primary_Payer_Class_Cd,
-#              'Medicare' = 'M',
-#              'Medicare Advantage' = 'K',
-#              'Self-Pay' = 'P',
-#              'Blue Care' = 'J',
-#              'Americhoice' = '8')
-#   
-#   #Plots the top 5 primary payers by their costs paid for syndemic patients
-# a1<-ggplotly(ggplot(data = md_top_payers, 
-#        aes(y = total/100000000, 
-#            x = reorder(Primary_Payer_Class_Cd, -total), 
-#            fill = gov ) ) +
-#   geom_col() +
-#   labs(title = 'Total Costs Covered by Top 5 Healthcare Providers',
-#        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-#        caption = 'End the Syndemic | DataLab 2022',
-#        x = 'Primary Provider',
-#        y = 'Cost Paid (in millions of US dollars)') +
-#   scale_fill_manual(md_top_payers, values = c('#1B365D', '#91BAA7'), 
-#                     labels = c('Privately Funded', 'Government Funded', '', '', ''),
-#                     name = 'Color Legend:') +
-#   theme(legend.position = 'bottom') +
-#   theme(axis.text.x = element_text(angle = 10)))
-#   
 
 #creates a object that groups by primary payer, summaries total paid by provider,
 #and then adds gov columns to determine if government funded or privately funded
@@ -1137,8 +744,8 @@ md_big_gov <- masterdata %>%
   summarise(total = sum(Total_Tot_Chrg)) %>% 
   arrange(desc(total)) %>% 
   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
-                      'Government Funded', 
-                      'Privately Funded')) %>% 
+                      ' ', 
+                      '  ')) %>% 
   mutate(Primary_Payer = ifelse(Primary_Payer_Class_Cd %in%"C","Federal Tricare",
                        ifelse(Primary_Payer_Class_Cd %in%"D","Medicaid",
                               ifelse(Primary_Payer_Class_Cd %in%"M","Medicare",
@@ -1159,17 +766,15 @@ md_big_gov <- masterdata %>%
 a2<-ggplotly(ggplot(data = md_big_gov, 
        aes(y = total/100000000, 
            x = gov, 
-           fill = Primary_Payer ) ) +
-  geom_col() +
+           fill = Primary_Payer)) +
+  geom_col(color = "#555555")+
   labs(title = 'Total Costs Paid by Government and Private Providers',
        caption = 'End the Syndemic | DataLab 2022',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-       x = 'Primary Payer',
-       y = 'Cost Paid (in millions of US dollars)')) 
-  # +
-  # scale_fill_manual(md_top_payers, values = c('#91BAA7', '#1B365D'), 
-  #                   labels = c('Privately Funded', 'Government Funded'),
-  #                   name = 'Color Legend:'))
+       x = '',
+       y = 'Cost Paid (in millions of US dollars)')+
+  scale_fill_manual(values = c('#1B365D','#1B365D','#91BAA7','#91BAA7','#91BAA7','#1B365D','#91BAA7', '#91BAA7','#1B365D','#1B365D','#1B365D','#91BAA7','#1B365D','#1B365D')) +
+  theme(legend.position = "none", text = element_text(size = 15)))
   
  #Adds a gov column, private or publicly funded, to md_phi
 md_phi_jacob <- md_phi_jacob %>%
@@ -1178,6 +783,8 @@ md_phi_jacob <- md_phi_jacob %>%
                       'Privately Funded')) 
 
 #########################################
+
+groups = c('Government Funded','Privately Funded')
 
 govtotsud<-md_phi_jacob %>% filter(sud,gov=="Government Funded")
 govtotnumsud<-sum(govtotsud$Total_Tot_Chrg,na.rm = TRUE)/100
@@ -1188,21 +795,21 @@ privtotnumsud<-sum(privtotsud$Total_Tot_Chrg,na.rm = TRUE)/100
 totmdsud<-md_phi_jacob %>% filter(sud)
 totmdnumsud<-sum(totmdsud$Total_Tot_Chrg,na.rm = TRUE)/100
 
-percs6 = c((govtotnumsud/totmdnumsud) * 100, (privtotnumsud/totmdnumsud) * 100)
+percs6 = c((govtotnumsud/totmdnumsud)*100, (privtotnumsud/totmdnumsud)*100)
 
 percent_df6 = data.frame(groups, percs6)
 
 a1<-ggplotly(ggplot(data = percent_df6,
-       aes(x = groups, y = percs5, fill = groups)) +
+       aes(x = groups, y = percs6, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs6,2),"%")),vjust = -.3)+
-    labs(title = 'Percentage of Money by Primary Payer with SUD',
+    geom_text(aes(label = paste(round(percs6,2),"%")), size = 4,nudge_y = 1)+
+    labs(title = 'Percentage of Cost by Primary Payer with SUD',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Money',
+       y = 'Percentage of Cost',
        x = 'Primary Payer') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0'))
+  theme(legend.position = '0', text = element_text(size = 12)))
 
 ##########################################
 
@@ -1215,210 +822,42 @@ percent_df7 = data.frame(groups, percs7)
 a3<-ggplotly(ggplot(data = percent_df7,
        aes(x = groups, y = percs7, fill = groups)) +
   geom_col() +
-    geom_text(aes(label = paste(round(percs7,2),"%")),vjust = -.3)+
-    labs(title = 'Percentage of Money by Primary Payer',
+    geom_text(aes(label = paste(round(percs7,2),"%")), size = 4,nudge_y = 1)+
+    labs(title = 'Percentage of Cost by Primary Payer',
        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
        caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Money',
-       x = 'Primary Payer') +
+       y = 'Percentage of Cost',
+       x = 'Primary Payer',
+       fill = 'Payer Category') +
   scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0'))
+  theme(legend.position = '0', text = element_text(size = 12)))
 
-top<-subplot(style(a1, showlegend=F),style(a3, showlegend=F))
+  annotations=list(list(
+    x = 0.8,
+    y = 1,
+    text = "Percent of Cost Covered by Government or Private Funding in SUD Cases",
+    xref = "paper",
+    yref = "paper",
+    xanchor = "center",
+    yanchor = "bottom",
+    showarrow = FALSE
+  ),
+  list(
+    x = 0.2,
+    y = 1,
+    text = "Percent of Cost Covered by Government OR Private Funding in all cases",
+    xref = "paper",
+    yref = "paper",
+    xanchor = "center",
+    yanchor = "bottom",
+    showarrow = FALSE
+  ))
+top<-subplot(style(a3, showlegend=F),a1, shareX=TRUE, titleY=TRUE, titleX=TRUE) %>% layout(title='Total Costs Paid by Government and Private Providers', annotations = annotations)
 
-subplot(a2,top, nrows = 2)
+
+
+subplot(style(a2, showlegend=F),top, nrows = 2, titleY=TRUE, titleX=TRUE)
 ```
-
-<!-- ### Graph 3 -->
-
-<!-- ```{r, echo=FALSE} -->
-
-<!-- #Creates a list of SUDs & ENDO or SSTVI for the ggvenn package to read -->
-<!-- syndemic_list <-  -->
-<!--   list('SUDs' = which(masterdata$sud),  -->
-<!--        'SSTVIs or Endocarditis' = which(masterdata$endo | masterdata$sstvi)) -->
-
-<!-- #Creates a venn diagram showing overlap in SUDS and syndemic related ICD-10s -->
-<!-- ggVennDiagram(syndemic_list, -->
-<!--               label_size = 4, -->
-<!--               label_alpha = 0.3, -->
-<!--               label = c('count')) + -->
-<!--   theme(legend.position = '0') + -->
-<!--   labs(title = 'Hospitalization overlap for substance use and infectious sequela of interest', -->
-<!--        subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient', -->
-<!--        caption = 'End the Syndemic | DataLab 2022') + -->
-<!--   scale_color_manual(values = c('black','black')) + -->
-<!--   scale_fill_gradientn(colors = c('#555555', '#91BAA7', '#555555', '#1B365D')) -->
-
-<!-- ``` -->
-
-### Graphs
-
-```{r}
-
- #Adds a gov column, private or publicly funded, to md_phi
-md_phi_jacob <- md_phi_jacob %>%
-  mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
-                      'Government Funded', 
-                      'Privately Funded')) 
-
-
-#Changes format of # from exponential to normal
-options(scipen = 999)
-
-endo<-md_phi_jacob %>% filter(sud&endo) %>% group_by(gov) %>% summarise(total = sum(Total_Tot_Chrg, na.rm = TRUE)/100)
-ost<-md_phi_jacob %>% filter(sud&ost) %>% group_by(gov) %>% summarise(total = sum(Total_Tot_Chrg, na.rm = TRUE)/100)
-sepsis<-md_phi_jacob %>% filter(sud&sepsis) %>% group_by(gov) %>% summarise(total = sum(Total_Tot_Chrg, na.rm = TRUE)/100)
-sstvi<-md_phi_jacob %>% filter(sud&sstvi) %>% group_by(gov) %>% summarise(total = sum(Total_Tot_Chrg, na.rm = TRUE)/100)
-
-groups<-c('Government Funded','Privately Funded','Government Funded','Privately Funded','Government Funded','Privately Funded','Government Funded','Privately Funded')
-infection<-c("Endo","Endo","Ost","Ost","Sepsis","Sepsis","SSTVI","SSTVI")
-
-
-
-percents<-c(as.character(endo[1,2]/sum(endo$total,na.rm = TRUE)*100),as.character(endo[2,2]/sum(endo$total,na.rm = TRUE)*100),
-as.character(ost[1,2]/sum(ost$total,na.rm = TRUE)*100),as.character(ost[2,2]/sum(ost$total,na.rm = TRUE)*100),
-as.character(sepsis[1,2]/sum(sepsis$total,na.rm = TRUE)*100),as.character(sepsis[2,2]/sum(sepsis$total,na.rm = TRUE)*100),
-as.character(sstvi[1,2]/sum(sstvi$total,na.rm = TRUE)*100),as.character(sstvi[2,2]/sum(sstvi$total,na.rm = TRUE)*100))
-
-
-percent_df8<-data.frame(groups,infection,percents)
-percent_df8<-percent_df8 %>% mutate(percents = as.numeric(percents))
-#Plots SUDS and endo
-renderPlot({
-ggplot(data = percent_df8,
-       aes(x = infection, y = percents, fill = groups)) +
-  geom_col(position = "dodge") +
-    geom_text(aes(label = paste(round(percents,2),"%")),vjust = -.3, position = position_dodge(width = .85))+
-    labs(title = 'Percentage of Hospitalization by Primary Payer',
-       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-       caption = 'End the Syndemic | DataLab 2022',
-       y = 'Percentage of Money',
-       x = 'Infection') +
-  scale_fill_manual(values = c('#91BAA7', '#1B365D')) +
-  theme(legend.position = '0')
-
-})
-{
-#   #Adds a gov column, private or publicly funded, to md_phi
-# md_phi_jacob <- md_phi_jacob %>%
-#   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
-#                       'Government Funded', 
-#                       'Privately Funded'))
-
-
- 
-#   #Plots SUDS and ost
-# g2<-ggplotly(ggplot(data = md_phi_jacob %>% 
-#          filter(sud, ost),
-#        aes(x = quarter,
-#            y = Total_Tot_Chrg/100,
-#            fill = gov)) +
-#   geom_col(position = 'dodge') +
-#   labs(title = 'Trends in Costs for Substance Use  and Osteomyelitis',
-#                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-#                       caption = 'End the Syndemic | DataLab 2022',
-#                       x = 'Yearly Quarter',
-#                       y = 'Cost (In US Dollars)',
-#        fill = 'Primary Payer:') +
-#   theme(legend.position = 'none') +
-#   scale_fill_manual(values = c('#91BAA7', '#1B365D')))
-# 
-#   #Adds a gov column, private or publicly funded, to md_phi
-# md_phi_jacob <- md_phi_jacob %>%
-#   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
-#                       'Government Funded', 
-#                       'Privately Funded'))
-# 
-# 
-#   
-#   #Plots SUDS and sepsis
-# g3<-ggplotly(ggplot(data = md_phi_jacob %>% 
-#          filter(sud, sepsis),
-#        aes(x = quarter,
-#            y = Total_Tot_Chrg/100,
-#            fill = gov)) +
-#   geom_col(position = 'dodge') +
-#   labs(title = 'Trends in Costs for Substance Use  and Sepsis',
-#                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-#                       caption = 'End the Syndemic | DataLab 2022',
-#                       x = 'Yearly Quarter',
-#                       y = 'Cost (In US Dollars)',
-#        fill = 'Primary Payer:') +
-#   theme(legend.position = 'none') +
-#   scale_fill_manual(values = c('#91BAA7', '#1B365D')))
-#   
-# 
-#   #Adds a gov column, private or publicly funded, to md_phi
-# md_phi_jacob <- md_phi_jacob %>%
-#   mutate(gov = ifelse(Primary_Payer_Class_Cd %in% c('C','D','M','W','N','K','J',11, 12, 8, 10, 'Q', 'T'), 
-#                       'Government Funded', 
-#                       'Privately Funded'))
-# 
-# 
-#   
-#   #Plots SUDS and SSTVIs
-# g4<-ggplotly(ggplot(data = md_phi_jacob %>% 
-#          filter(sud, sstvi),
-#        aes(x = quarter,
-#            y = Total_Tot_Chrg/100,
-#            fill = gov)) +
-#   geom_col(position = 'dodge') +
-#   labs(title = 'Trends in Costs for Substance Use  and all SSTVIs',
-#                       subtitle = 'TN Hospitals 2019 | Inpatient and Outpatient',
-#                       caption = 'End the Syndemic | DataLab 2022',
-#                       x = 'Yearly Quarter',
-#                       y = 'Cost (In US Dollars)',
-#        fill = 'Primary Payer:') +
-#   theme(legend.position = 'bottom') +
-#   scale_fill_manual(values = c('#91BAA7', '#1B365D')))
-# 
-# annotations = list( 
-#   list( 
-#     x = 0.2,  
-#     y = 1.0,  
-#     text = "Trends in Costs for Substance Use  and Endocarditis",  
-#     xref = "paper",  
-#     yref = "paper",  
-#     xanchor = "center",  
-#     yanchor = "bottom",  
-#     showarrow = FALSE 
-#   ),  
-#   list( 
-#     x = 0.8,  
-#     y = 1,  
-#     text = "Trends in Costs for Substance Use  and Osteomyelitis",  
-#     xref = "paper",  
-#     yref = "paper",  
-#     xanchor = "center",  
-#     yanchor = "bottom",  
-#     showarrow = FALSE 
-#   ),  
-#   list( 
-#     x = 0.2,  
-#     y = 0.49,  
-#     text = "Trends in Costs for Substance Use  and Sepsis",  
-#     xref = "paper",  
-#     yref = "paper",  
-#     xanchor = "center",  
-#     yanchor = "bottom",  
-#     showarrow = FALSE 
-#   ),
-#   list( 
-#     x = 0.8,  
-#     y = 0.49,  
-#     text = "Trends in Costs for Substance Use  and all SSTVIs",  
-#     xref = "paper",  
-#     yref = "paper",  
-#     xanchor = "center",  
-#     yanchor = "bottom",  
-#     showarrow = FALSE 
-#   ))
-# 
-# subplot(style(g1,showlegend = FALSE),style(g2,showlegend = FALSE),style(g3,showlegend = FALSE),g4,nrows = 2, shareX = TRUE, shareY = TRUE ) %>% layout(title = "Trends in Cost for Substance Use " , annotations = annotations)
-  }
-```
-
 
 Map of Syringe Exchange Programs {data-orientation=rows}
 =======================================
@@ -1443,6 +882,12 @@ selectInput("county_select",
 
 <font size="3" color = "#1B365D"> *This is a map from 2019, where each purple pin marks the location of a Syringe Exchange Clinic in the state of Tennessee.* 
 
+*You can hover a county to find out useful information about that county.*
+
+*At the top left of the page, there is a search bar for counties in Tennessee. You can search for more than one county. Be sure to deselect the 'All' option before selecting your county*
+
+*At the top left of the map, there are buttons to zoom in and out.You can click the button with the circle and allow the browser to get your current location so you can compare your proximity to a syringe exchange program.*
+
 **Glossary :** *Substance Use Disorder (SUD)*</font>
 
 
@@ -1458,7 +903,7 @@ renderValueBox({
   
   valueBox("Number of Syringe Exchange Programs in TN",
            value = sepcount,
-           icon = "fa-hospital-user")
+           icon = "fa-hospital")
 })
 ```
 
@@ -1500,14 +945,15 @@ leaflet(locations) %>%
               weight = 2,
               opacity = .9,
               highlightOptions = highlightOptions(color = "#91BAA7", bringToFront = TRUE ),
-              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Percent of Hospital Cases with SUD : ",round(df_map()@data$percap,2)) %>% lapply(htmltools::HTML)) %>% 
+              label = paste0("County : ",df_map()@data$NAMELSAD,"<br/>"," Percent of Hospital Cases with SUD and Syringe Related illness : ",round(df_map()@data$percap,2)) %>% lapply(htmltools::HTML)) %>% 
   addControlGPS(options = gpsOptions(position = "topleft", activate = TRUE, 
                                              autoCenter = TRUE, maxZoom = 200, 
                                              setView = TRUE)) %>% 
     addLegend(pal = pal, 
             values = boundaries@data$percap, 
             opacity = 0.7, 
-            title = htmltools::HTML("Percentage of Hospital cases with SUD <br>
+            title = htmltools::HTML("Percentage of Hospital cases with <br>
+                                    SUD and Syringe Related illness <br>
                                     by County <br>
                                     2019"),
             position = "bottomright")
