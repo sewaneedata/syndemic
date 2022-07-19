@@ -12,3 +12,10 @@ discharges_phi
 
 .Rhistory
 .RData
+
+*.cpg
+*.dbf
+*.prl
+*.shp
+*.xml
+*.shx
