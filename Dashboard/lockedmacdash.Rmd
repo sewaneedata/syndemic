@@ -56,7 +56,7 @@ locations<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1sb4P_7-UkcpkmENZ_
 locations<-locations %>% mutate(label = paste0("Name : ",name,"<br/>"," Address :",address,"<br/>","Phone :",phone,"<br/>" ) %>% lapply(htmltools::HTML))
 
 # Reading in info of every zip and their state and county
-zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
+# zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
 
 # Reading in master data
 masterdata<-read_csv("/Users/erteam/Desktop/Syndemic Project/masterdataphi.csv")
@@ -70,10 +70,10 @@ masterdata<-read_csv("/Users/erteam/Desktop/Syndemic Project/masterdataphi.csv")
 }
 
 # Selecting the columns we need
-zips<-zips%>% dplyr::select(zip,state,county)
+# zips<-zips%>% dplyr::select(zip,state,county)
 
 # Make columns match
-zips<-zips %>% rename(Patient_Zip = zip)%>% mutate(Patient_Zip = as.numeric(Patient_Zip))
+# zips<-zips %>% rename(Patient_Zip = zip)%>% mutate(Patient_Zip = as.numeric(Patient_Zip))
 
 {
 # Creating the casesbycounty csv
@@ -92,17 +92,17 @@ zips<-zips %>% rename(Patient_Zip = zip)%>% mutate(Patient_Zip = as.numeric(Pati
 totbyprimarypayer<-read.csv("/Users/erteam/Desktop/Syndemic Project/totbyprimarypayer.csv")
 
 # Mashing together to give everyone a county name
-d<-inner_join(masterdata,zips, by = "Patient_Zip")
+# d<-inner_join(masterdata,zips, by = "Patient_Zip")
 
 # Keep unique ids
-masterdata<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN")
+# masterdata<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN")
 
 # Reading in population by county data
 popbycounty<-read_csv("/Users/erteam/Desktop/Syndemic Project/SDC_TN_PL20_CountyPopChange.csv") 
 popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(county = County) %>% mutate(county = paste(county,"County"))
 
 # Making race and etnichity column
-masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
+# masterdata<-masterdata %>% separate(col=Patient_Race_Ethnicity,into=c( "Race", "Ethnicity"),sep= 1)
 
 # # Adding the real labels to race and ethnicity
 # masterdata<-masterdata %>% mutate(Race = ifelse(Race == 1,"White or Caucasian",
@@ -121,7 +121,9 @@ s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county")
 boundaries <-subset(s, s@data$STATEFP == "47")
 
 # Making color pallet based on SUD in county
-paldata<-masterdata %>% filter(sud&(endo|sstvi)) %>% group_by(county) %>% summarise(total = n())
+# paldata<-masterdata %>% filter(sud&(endo|sstvi)) %>% group_by(county) %>% summarise(total = n())
+# write_csv(paldata,"sudcasesbycounty.csv")
+paldata<-read_csv("/Users/erteam/Desktop/Syndemic Project/sudcasesbycounty.csv")
 
 # Adding county total to spatial data frame
 boundaries<-geo_join(boundaries, paldata, by_sp ="NAMELSAD" , by_df ="county")
