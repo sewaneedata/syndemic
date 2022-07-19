@@ -15,7 +15,7 @@ discharges_phi
 
 *.cpg
 *.dbf
-*.prl
+*.prj
 *.shp
 *.xml
 *.shx
