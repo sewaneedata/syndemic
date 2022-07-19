@@ -57,7 +57,11 @@ locations<-locations %>% mutate(label = paste0("Name : ",name,"<br/>"," Address 
 
 # Reading in info of every zip and their state and county
 <<<<<<< HEAD
+<<<<<<< HEAD
 zips<-readr::read_csv("D:/DataLab/syndemic/zip_code_database.csv")
+=======
+# zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
+>>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
 =======
 # zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
 >>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
@@ -90,10 +94,17 @@ masterdata<-read_csv("D:/DataLab/syndemic/masterdata.csv")
 }
 
 # Reading in data that shoes total number of total cases for each county
+<<<<<<< HEAD
  mdall<-read_csv("D:/DataLab/syndemic/casescycounty.csv")
 
 # reading in necessary data, where everyone is broken down by government funded or privately
 totbyprimarypayer<-read.csv("D:/DataLab/syndemic/totbyprimarypayer.csv")
+=======
+ mdall<-read_csv("/Users/erteam/Desktop/Syndemic Project/casescycounty.csv")
+
+# reading in necessary data, where everyone is broken down by government funded or privately
+totbyprimarypayer<-read.csv("/Users/erteam/Desktop/Syndemic Project/totbyprimarypayer.csv")
+>>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
 
 # Mashing together to give everyone a county name
 # d<-inner_join(masterdata,zips, by = "Patient_Zip")
@@ -120,7 +131,11 @@ popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(
 #
 
 # Reading in spatial polygon data for map
+<<<<<<< HEAD
 s <- shapefile("D:/DataLab/syndemic/tl_2021_us_county") 
+=======
+s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county") 
+>>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
 # Filter for just Tennessee polygons
 boundaries <-subset(s, s@data$STATEFP == "47")
 
