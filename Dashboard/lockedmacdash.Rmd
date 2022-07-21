@@ -50,24 +50,18 @@ library(ggpubr)
 pdf(NULL)
 
 # Reading in data of locations of SEP
+# This is a google sheet I manually made since it was only 8 syringe exchange programs that I could find and it was easier to do
+# You can replace this link with a sharing link of a google sheet of your own, and as you update that sheet it updates the map on the dashboard
 locations<-gsheet2tbl("https://docs.google.com/spreadsheets/d/1sb4P_7-UkcpkmENZ_DpMI45wRY7oItIFbv-0suLmz7U/edit?usp=sharing")
 
-# Creating a column named label
+# Creating a column named label for the label on the map
 locations<-locations %>% mutate(label = paste0("Name : ",name,"<br/>"," Address :",address,"<br/>","Phone :",phone,"<br/>" ) %>% lapply(htmltools::HTML))
 
 # Reading in info of every zip and their state and county
-<<<<<<< HEAD
-<<<<<<< HEAD
-zips<-readr::read_csv("D:/DataLab/syndemic/zip_code_database.csv")
-=======
 # zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
->>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
-=======
-# zips<-readr::read_csv("/Users/erteam/Desktop/Syndemic Project/zip_code_database.csv")
->>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
 
 # Reading in master data
-masterdata<-read_csv("D:/DataLab/syndemic/masterdata.csv")
+masterdata<-read_csv("/Users/erteam/Desktop/Syndemic Project/masterdataphi.csv")
 
 {
 # How we made totbyprimarypayer
@@ -93,18 +87,11 @@ masterdata<-read_csv("D:/DataLab/syndemic/masterdata.csv")
 # write_csv(mdall,"casescycounty.csv")
 }
 
-# Reading in data that shoes total number of total cases for each county
-<<<<<<< HEAD
- mdall<-read_csv("D:/DataLab/syndemic/casescycounty.csv")
-
-# reading in necessary data, where everyone is broken down by government funded or privately
-totbyprimarypayer<-read.csv("D:/DataLab/syndemic/totbyprimarypayer.csv")
-=======
+# Reading in data that shows total number of total cases for each county
  mdall<-read_csv("/Users/erteam/Desktop/Syndemic Project/casescycounty.csv")
 
 # reading in necessary data, where everyone is broken down by government funded or privately
 totbyprimarypayer<-read.csv("/Users/erteam/Desktop/Syndemic Project/totbyprimarypayer.csv")
->>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
 
 # Mashing together to give everyone a county name
 # d<-inner_join(masterdata,zips, by = "Patient_Zip")
@@ -113,7 +100,7 @@ totbyprimarypayer<-read.csv("/Users/erteam/Desktop/Syndemic Project/totbyprimary
 # masterdata<-d %>% distinct(...1, .keep_all = TRUE) %>% filter(state =="TN")
 
 # Reading in population by county data
-popbycounty<-read_csv("D:/DataLab/syndemic/SDC_TN_PL20_CountyPopChange.csv") 
+popbycounty<-read_csv("/Users/erteam/Desktop/Syndemic Project/SDC_TN_PL20_CountyPopChange.csv") 
 popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(county = County) %>% mutate(county = paste(county,"County"))
 
 # Making race and etnichity column
@@ -131,11 +118,8 @@ popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(
 #
 
 # Reading in spatial polygon data for map
-<<<<<<< HEAD
-s <- shapefile("D:/DataLab/syndemic/tl_2021_us_county") 
-=======
 s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county") 
->>>>>>> 4bf85f9b56e4f162262bf2b2519f335806f8ccfd
+
 # Filter for just Tennessee polygons
 boundaries <-subset(s, s@data$STATEFP == "47")
 
@@ -167,7 +151,7 @@ syringes <- makeAwesomeIcon(
   library = "fa"
 )
 
-  #Formats data, adds a months column, makes an age groups column and then a quarter columns for the year
+  #Formating, makes an age groups column and then a quarter columns for the year
 masterdata <- 
   masterdata %>% 
   mutate(creation_dt = mdy(creation_dt)) %>% 
@@ -189,7 +173,7 @@ md_phi_jacobnf <-masterdata
 
 
 ```{r reactive}
-
+# This is make makes the choose your county button work next to the map
 df_map<-reactive({
 
   if("All" %in% input$county_select){
@@ -200,6 +184,8 @@ df_map<-reactive({
   return(df)
 
 })
+
+# These are here, if you would like to filter for buttons on the dashboard.
 
 # for sud and endo or sstvi
 df1<-reactive({
@@ -309,20 +295,23 @@ Home Page  <!--{data-orientation=rows} -->
 
 Column
 ---------------------------------------
+<!-- This loads in first half of the homepage which is a screenshoot of a canva poster, layout in rmarkdown is hard so this was an easy solution -->
 <img src="/Users/erteam/Desktop/Syndemic Project/syndemic/HomePage.png" width=100%> 
 
 Column
 ---------------------------------------
+<!-- This loads in first half of the homepage which is a screenshoot of a canva poster, layout in rmarkdown is hard so this was an easy solution -->
 <img src="/Users/erteam/Desktop/Syndemic Project/syndemic/Glossary.png" width = 100%>
 
 Relative Risk
 =======================================
-
+<!-- This is were we added the description of the graphs to the side. And used some HTML to make the spacing correct. -->
 Sidebar {.sidebar}
 --------------------------------------- 
-<p>**Description: **<br>*The graphs on this page contrast the prevalence of the four focal health conditions between the hospital population diagnosed with SUD and the overall hospital population.*<p>
-<p>**Caption:**<br>*The graph on the left displays the prevalence of all four health conditions in each hospital population.*<p>
+<font size="3" color = "#1B365D"><p>**Description: **<br>*The graphs on this page contrast the prevalence of the four focal health conditions between the hospital population diagnosed with SUD and the overall hospital population.*<p><br>
+<p>**Caption:**<br>*The graph on the left displays the prevalence of all four health conditions in each hospital population.*<p><br>
 <p>**Caption:**<br>*The tabular graphs on the right break down the risk by disease.*<p>
+</font>
 
 Column
 ---------------------------------------
@@ -369,16 +358,23 @@ Column {.tabset .tabset-fade}
 
  groups = c('SUDs Cases','Total Cases')
 
+# Get number of cases with sud and endocarditis
 endo<-masterdata %>% filter(sud&endo ) %>% nrow()
+
+# Get total number of cases with sud
 sud<-masterdata %>% filter(sud) %>% nrow()
 
+# Get number of cases with endocarditis
 endoall<-masterdata %>% filter(endo) %>% nrow()
+
+# Total number of cases
 mdall<-4890102
 
+# Setting up dataframe to plot
 percs2 = c((endo/sud) * 100, (endoall/mdall) * 100)
-
 percent_df2 = data.frame(groups, percs2)
 
+# Now plot the graph with data frame we just made from our data
 renderPlot({
 ggplot(data = percent_df2,
        aes(x = groups, y = percs2, fill = groups)) +
@@ -402,16 +398,23 @@ ggplot(data = percent_df2,
 
  groups = c('SUDs Cases','Total Cases')
 
+# Get number of cases with sud and osteomyelitis
 ost<-masterdata %>% filter(sud&ost ) %>% nrow()
+
+# Get total number of cases with sud
 sud<-masterdata %>% filter(sud) %>% nrow()
 
+# Get number of cases with osteomyelitis
 ostall<-masterdata %>% filter(ost) %>% nrow()
+
+# Total number of cases
 mdall<-4890102
 
+# Setting up dataframe to plot
 percs3 = c((ost/sud) * 100, (ostall/mdall) * 100)
-
 percent_df3 = data.frame(groups, percs3)
 
+# Now plot the graph with data frame we just made from our data
 renderPlot({
 ggplot(data = percent_df3,
        aes(x = groups, y = percs3, fill = groups)) +
@@ -435,18 +438,24 @@ ggplot(data = percent_df3,
 
  groups = c('SUDs Cases','Total Cases')
 
+# Get number of cases with sud and sstvi
 sstvi<-masterdata %>% filter(sud&sstvi)%>% nrow()
+
+# Get total number of cases with sud
 sud<-masterdata %>% filter(sud) %>% nrow()
 
+# Get number of cases with sstvi
 sstviall<-masterdata %>% filter(sstvi) %>% nrow()
+
+# Total number of cases
 mdall<-4890102
 
+# Setting up dataframe to plot
 percs4 = c((sstvi/sud)*100, (sstviall/mdall)*100)
-
 percent_df4 = data.frame(groups, percs4)
 
+# Now plot the graph with data frame we just made from our data
 renderPlot({
-  
 ggplot(data = percent_df4,
        aes(x = groups, y = percs4, fill = groups)) +
   geom_col() +
@@ -469,16 +478,23 @@ ggplot(data = percent_df4,
 
  groups = c('SUDs Cases','Total Cases')
 
+# Get number of cases with sud and sepsis
 sepsis<-masterdata %>% filter(sud&sepsis ) %>% nrow()
+
+# Get total number of cases with sud
 sud<-masterdata %>% filter(sud) %>% nrow()
 
+# Get number of cases with sepsis
 sepsisall<-masterdata %>% filter(sepsis) %>% nrow()
+
+# Total number of cases
 mdall<-4890102
 
+# Setting up dataframe to plot
 percs5 = c((sepsis/sud) * 100, (sepsisall/mdall) * 100)
-
 percent_df5 = data.frame(groups, percs5)
 
+# Now plot the graph with data frame we just made from our data
 renderPlot({
 ggplot(data = percent_df5,
        aes(x = groups, y = percs5, fill = groups)) +
@@ -501,10 +517,11 @@ Data by Age Group {data-orientation=rows}
 
 Sidebar {.sidebar}
 --------------------------------------- 
-
-<p>**Caption:**<br>*The graphs on the upper half display the percentages of each age group that has contracted at least one of the four health conditions.*<p>
+<!-- This is were we added the description of the graphs to the side. And used some HTML to make the spacing correct. -->
+<font size="3" color = "#1B365D"><p>**Caption:**<br>*The graphs on the upper half display the percentages of each age group that has contracted at least one of the four health conditions.*<p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <p>**Caption:**<br>*The tabular graphs on the lower half of the page break down the risk by disease.*<p>
+</font>
 
 Row                                  
 ---------------------------------------
@@ -513,9 +530,13 @@ Row
 
 ```{r}
 
+# Get number of cases with sud and an related infection
 total3<-md_phi_jacob%>% filter(sud&(endo|sstvi)) %>% nrow()
+
+# Get number of cases with an related infection
 total4<-md_phi_jacob%>% filter((endo|sstvi)) %>% nrow()
 
+# Plot the graph
 renderPlot({
   
   #Plots SUDS and SSTVI or Endo
@@ -552,6 +573,7 @@ c2<-ggplot(data=md_phi_jacob %>%
     ylim(0,35)+
   theme(legend.position = "none", text = element_text(size = 20))
 
+# Sets up the graphs next to each other
 ggarrange(c1,c2,labels = c("A","B"), ncol = 2, nrow = 1)
 
 })
@@ -564,11 +586,15 @@ Row {.tabset .tabset-fade style="height:60pc;"}
 ### Endocarditis
 
 ```{r}
-renderPlot({
-  
+
+  # Get number of cases with sud and endocarditis
   total5<-md_phi_jacob%>% filter(sud&endo) %>% nrow()
+
+# Get number of cases with endocarditis
   total6<-md_phi_jacob%>% filter(endo) %>% nrow()
   
+  # Plot the graph
+  renderPlot({
 #Plots SUDS and endo
   b1<-ggplot(df2(),
       aes(x = Age_Groups,
@@ -601,17 +627,22 @@ renderPlot({
   theme(legend.position = "none", text = element_text(size = 20))+
   ylim(0,45)
 
+    # Sets up the graphs next to each other
 ggarrange(b1,b2,ncol=2,nrow=1)
  })
 ```
 
 ### Ostemyelitis
 ```{r}
-renderPlot({
-  
+
+  # Get number of cases with sud and osteomyelitis
   total7<-md_phi_jacob%>% filter(sud&ost) %>% nrow()
+
+# Get number of cases with osteomyelitis
   total8<-md_phi_jacob%>% filter(ost) %>% nrow()
   
+  # Plot graph
+  renderPlot({
     b3<-ggplot(data = df3(),
        aes(x = Age_Groups,
            y = n/total7*100,
@@ -642,6 +673,7 @@ renderPlot({
   theme(legend.position = "none", text = element_text(size = 20))+
   ylim(0,45)    
     
+      # Sets up the graphs next to each other
     ggarrange(b3,b4,ncol=2,nrow=1)
 })
 ```
@@ -649,11 +681,15 @@ renderPlot({
 ### Sepsis
 
 ```{r}
-renderPlot({
   
+  # Get number of cases with sud and sepsis
   total9<-md_phi_jacob%>% filter(sud&sepsis) %>% nrow()
+  
+  # Get number of cases with sepsis
   total10<-md_phi_jacob%>% filter(sepsis) %>% nrow()
   
+  # Plot graph
+ renderPlot({ 
 b5<-ggplot(data = df4(),
        aes(x = Age_Groups,
            y = n/total9*100,
@@ -684,6 +720,7 @@ b6<-ggplot(data = df4b(),
   theme(legend.position = "none", text = element_text(size = 20))+
   ylim(0,45)
 
+# Sets up the graphs next to each other
 ggarrange(b5,b6,ncol=2,nrow=1)
 })
   
@@ -692,11 +729,15 @@ ggarrange(b5,b6,ncol=2,nrow=1)
 ### SSTVIs
 
 ```{r}
-renderPlot({
-  
+
+  # Get number of cases with sud and sstvi
   total12<-md_phi_jacob%>% filter(sud&sstvi) %>% nrow()
+
+# Get number of cases with sstvi
   total13<-md_phi_jacob%>% filter(sstvi) %>% nrow()
   
+  # Plot graph
+  renderPlot({
   #Plots SUDS and sstvi
 b7<-ggplot(data = df5(),
        aes(x = Age_Groups,
@@ -728,6 +769,7 @@ b8<-ggplot(data = df5b(),
   theme(legend.position = "none", text = element_text(size = 20))+
   ylim(0,45)
 
+# Sets up the graphs next to each other
 ggarrange(b7,b8,ncol=2,nrow=1)
 })
 ```
@@ -735,14 +777,14 @@ ggarrange(b7,b8,ncol=2,nrow=1)
 
 Visualizing Cost {data-orientation=rows}
 =======================================
-
+<!-- This is were we added the description of the graphs to the side. And used some HTML to make the spacing correct. -->
 Sidebar {.sidebar}
 --------------------------------------- 
-<p>**Caption: **<br>*The graph on the top shows the primary payer for the four focal health conditions with no regard to a SUD diagnosis.*<p>
+<font size="3" color = "#1B365D"><p>**Caption: **<br>*The graph on the top shows the primary payer for the four focal health conditions with no regard to a SUD diagnosis.*<p>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <p>**Caption: **<br>*The graph on the bottom left shows the percentage of SUD cases that were covered primarily by a government payer or a private payer. *<p>
 <p>**Caption: **<br>*The graph on the bottom right shows the percentage of all cases that were covered primarily by a government payer or a private payer.*<p>
-
+</font>
 
 Row
 ---------------------------------------
@@ -801,19 +843,29 @@ md_phi_jacob <- md_phi_jacob %>%
 
 groups = c('Government Funded','Privately Funded')
 
+# Filters for people with sud and bill payed by government 
 govtotsud<-md_phi_jacob %>% filter(sud,gov=="Government Funded")
+
+# Sums up all the bills to one number
 govtotnumsud<-sum(govtotsud$Total_Tot_Chrg,na.rm = TRUE)/100
 
+# Filters for people with sud and bill payed privately
 privtotsud<-md_phi_jacob %>% filter(sud,gov == "Privately Funded")
+
+# Sums up all the bills to one number
 privtotnumsud<-sum(privtotsud$Total_Tot_Chrg,na.rm = TRUE)/100
 
+# Data of just sud cases
 totmdsud<-md_phi_jacob %>% filter(sud)
+
+# Sums up total of all sud cases
 totmdnumsud<-sum(totmdsud$Total_Tot_Chrg,na.rm = TRUE)/100
 
+# Sets up dataframe to plot
 percs6 = c((govtotnumsud/totmdnumsud)*100, (privtotnumsud/totmdnumsud)*100)
-
 percent_df6 = data.frame(groups, percs6)
 
+# Plot the graph
 a1<-ggplotly(ggplot(data = percent_df6,
        aes(x = groups, y = percs6, fill = groups)) +
   geom_col() +
@@ -830,10 +882,11 @@ a1<-ggplotly(ggplot(data = percent_df6,
 
 groups = c('Government Funded','Privately Funded')
 
+# Sets up dataframe to plot
 percs7= c((totbyprimarypayer[1,2]/sum(totbyprimarypayer$total))*100, (totbyprimarypayer[2,2]/sum(totbyprimarypayer$total))*100)
-
 percent_df7 = data.frame(groups, percs7)
 
+# Plot the graph
 a3<-ggplotly(ggplot(data = percent_df7,
        aes(x = groups, y = percs7, fill = groups)) +
   geom_col() +
@@ -867,10 +920,12 @@ a3<-ggplotly(ggplot(data = percent_df7,
     yanchor = "bottom",
     showarrow = FALSE
   ))
+  
+  # sets up two graphs side by side
 top<-subplot(style(a3, showlegend=F),a1, shareX=TRUE, titleY=TRUE, titleX=TRUE) %>% layout(title='Total Costs Paid by Government and Private Providers', annotations = annotations)
 
 
-
+# Sets up the graphs in the format we want
 subplot(style(a2, showlegend=F),top, nrows = 2, titleY=TRUE, titleX=TRUE)
 ```
 
@@ -883,7 +938,9 @@ Sidebar {.sidebar}
 
 ```{r loc_inp}
 
-masterdatacountys<-masterdata %>% pull(county) %>% unique() %>% sort()
+# The side button to choose county
+
+masterdatacountys<-boundaries@data %>% pull(county) %>% sort()
 
 selectInput("county_select",
             "Choose county",
@@ -894,7 +951,7 @@ selectInput("county_select",
 ```
 
 ###
-
+<!-- Explanation of the map -->
 <font size="3" color = "#1B365D"> *This is a map from 2019, where each purple pin marks the location of a Syringe Exchange Clinic in the state of Tennessee.* 
 
 *You can hover a county to find out useful information about that county.*
@@ -948,6 +1005,8 @@ Row
 ### Tennessee County Percentage
 
 ```{r}
+
+# This is to plot the map
 renderLeaflet({
   
 leaflet(locations) %>%
@@ -992,12 +1051,14 @@ Column
 
 ```
 
-Column
+Column {style="height:80pc;"}
 ---------------------------------------
-
+<!--Our page that kinda goes through and lets us talk about self.
+ This is also just images with captions-->
 ### Delana 
 
 ![ Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. ](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_7015.jpg){#id .class }
+
 
 ### Alan
 
@@ -1013,7 +1074,7 @@ Column
 
 ![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG-AMBR.jpeg)
 
-
+<!-- Needed to make this into an shiny app essential! -->
 ```{r}
 ui<-fluidPage(
   

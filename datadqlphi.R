@@ -1,5 +1,10 @@
 #SQLITE in RSTUDIO example!
 
+# This r scripts is the first place our data goes, because of the size of the data we needed to srink it first through a database language
+# this script uses sql in r to make a smaller data set which we did.
+
+# This is script used for private data, this data set just has 2 extra private columns we needed to do some analysing.
+
 library(RSQLite)
 library(DBI)
 library(dbplyr)
@@ -7,6 +12,7 @@ library(readr)
 library(data.table)
 
 setwd("~/Desktop/Syndemic Project")
+
 # Reading in sqlite
 portaldb <- dbConnect(SQLite(), "copy_discharges_phi")
 
