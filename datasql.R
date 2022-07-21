@@ -1,5 +1,8 @@
 #SQLITE in RSTUDIO example!
 
+# This r scripts is the first place our data goes, because of the size of the data we needed to srink it first through a database language
+# this script uses sql in r to make a smaller data set which we did.
+
 library(RSQLite)
 library(DBI)
 library(dbplyr)
@@ -23,7 +26,7 @@ res<-"SELECT '...1' ,File_Type , Data_Yr , Bill_Number , Record_Seq_Num , Hospit
 # Creating query
 ex<-dbGetQuery(portaldb, res)
 
-# Writing query data
+# Writing query data 
 write.csv(ex, "impdata.csv")
 # One time thing
 
