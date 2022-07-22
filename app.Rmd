@@ -5,7 +5,7 @@ date: '2022'
 runtime: shiny
 output:
   flexdashboard::flex_dashboard:
-    logo: https://github.com/sewaneedata/syndemic/blob/main/syndemiclogo.png?raw=true
+    logo: https://github.com/sewaneedata/syndemic/www/blob/main/syndemiclogo.png?raw=true
     theme:
       version: 4
       bg: "#FAFBFE"
