@@ -5,7 +5,7 @@ date: '2022'
 runtime: shiny
 output:
   flexdashboard::flex_dashboard:
-    logo: /Users/erteam/Desktop/Syndemic Project/syndemic/syndemiclogo.png
+    logo: https://github.com/sewaneedata/syndemic/blob/main/syndemiclogo.png?raw=true
     theme:
       version: 4
       bg: "#FAFBFE"
@@ -117,6 +117,8 @@ popbycounty<-popbycounty %>% dplyr::select(County,`Population 2020`) %>% rename(
 #                                                      ifelse(Ethnicity ==3,"Not Hispanic Origin","Hispanic Origin Unknown")))
 #
 
+# Link for you to go and downlaod the shapefile
+# url<-"https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2021&layergroup=Counties+%28and+equivalent%29"
 # Reading in spatial polygon data for map
 s <- shapefile("/Users/erteam/Desktop/Syndemic Project/tl_2021_us_county") 
 
@@ -154,17 +156,12 @@ syringes <- makeAwesomeIcon(
   #Formating, makes an age groups column and then a quarter columns for the year
 masterdata <- 
   masterdata %>% 
-  mutate(creation_dt = mdy(creation_dt)) %>% 
-  mutate(months = month(creation_dt)) %>% 
   mutate(Age_Groups = ifelse(Age %in% 0:17, '0-17', 
                              ifelse(Age %in% 18:24, '18-24',
                                     ifelse(Age %in% 25:34, '25-34',
                                            ifelse(Age %in% 35:44, '35-44',
                                                   ifelse(Age %in% 45:54, '45-54',
-                                                         ifelse(Age %in% 55:64, '55-64', '65+'))))))) %>% 
-  mutate(quarter = ifelse(months %in% 1:3, 1,
-                          ifelse(months %in% 4:6, 2,
-                                 ifelse(months %in% 7:9, 3, 4))))
+                                                         ifelse(Age %in% 55:64, '55-64', '65+')))))))
 md_phi_jacobnf <-masterdata
   md_phi_jacob<-md_phi_jacobnf %>% filter(!Age_Groups == '65+', !Age_Groups == '0-17')
 
@@ -296,12 +293,12 @@ Home Page  <!--{data-orientation=rows} -->
 Column
 ---------------------------------------
 <!-- This loads in first half of the homepage which is a screenshoot of a canva poster, layout in rmarkdown is hard so this was an easy solution -->
-<img src="/Users/erteam/Desktop/Syndemic Project/syndemic/HomePage.png" width=100%> 
+<img src="https://github.com/sewaneedata/syndemic/blob/main/HomePage.png?raw=true" width=100%> 
 
 Column
 ---------------------------------------
 <!-- This loads in first half of the homepage which is a screenshoot of a canva poster, layout in rmarkdown is hard so this was an easy solution -->
-<img src="/Users/erteam/Desktop/Syndemic Project/syndemic/Glossary.png" width = 100%>
+<img src="https://github.com/sewaneedata/syndemic/blob/main/Glossary.png?raw=true" width = 100%>
 
 Relative Risk
 =======================================
@@ -1057,22 +1054,22 @@ Column {style="height:80pc;"}
  This is also just images with captions-->
 ### Delana 
 
-![ Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. ](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_7015.jpg){#id .class }
+![ Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. ](https://github.com/sewaneedata/syndemic/blob/main/IMG_7015.JPG?raw=true){#id .class }
 
 
 ### Alan
 
-![Alan Kevin Espinoza (he/him) is a student at the University of the South from Houston, Texas. During his time at Sewanee, he has begun his major in Computer Science and Mathematics while working on being part of the 3-2 engineering program where after 3 years at Sewanee, he will do another 2 years studing Data Science at Washington University at St.Luios. On campus he is the President of the fraternity Gamma Sigma Phi, treasurer of the Hispanic Organization of Latino Awarness, helps his peers in the Academic Technology Center, and loves to rock climb on his free time. When he graduates, he intends to start his carrer as a data analyst or software engineer!](/Users/erteam/Desktop/Syndemic Project/syndemic/Dashboard/IMG-1319.jpg)
+![Alan Kevin Espinoza (he/him) is a student at the University of the South from Houston, Texas. During his time at Sewanee, he has begun his major in Computer Science and Mathematics while working on being part of the 3-2 engineering program where after 3 years at Sewanee, he will do another 2 years studing Data Science at Washington University at St.Luios. On campus he is the President of the fraternity Gamma Sigma Phi, treasurer of the Hispanic Organization of Latino Awarness, helps his peers in the Academic Technology Center, and loves to rock climb on his free time. When he graduates, he intends to start his carrer as a data analyst or software engineer!](https://github.com/sewaneedata/syndemic/blob/main/IMG-1319.jpg?raw=true)
 
 </p>
 
 ### Jacob
 
-![Jacob Herron (he/him) C'24 is a student at the University of the South from Rickman, Tennessee. During his time at Sewanee, he has started his major in economics and is working on a minor in mathematics. On campus, he can be found teaching new fencers at Fowler, catching up with friends and professors at Stirlings, or helping his peers at his job in the library. When he gradautes, he intends to pursue a masters degree in economics in hopes of working as an economist.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_5896.jpeg)
+![Jacob Herron (he/him) C'24 is a student at the University of the South from Rickman, Tennessee. During his time at Sewanee, he has started his major in economics and is working on a minor in mathematics. On campus, he can be found teaching new fencers at Fowler, catching up with friends and professors at Stirlings, or helping his peers at his job in the library. When he gradautes, he intends to pursue a masters degree in economics in hopes of working as an economist.](https://github.com/sewaneedata/syndemic/blob/main/IMG_5896.jpeg?raw=true)
 
 ### Amber
 
-![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG-AMBR.jpeg)
+![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](https://github.com/sewaneedata/syndemic/blob/main/IMG-AMBR.jpeg?raw=true)
 
 <!-- Needed to make this into an shiny app essential! -->
 ```{r}
