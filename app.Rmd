@@ -5,7 +5,7 @@ date: '2022'
 runtime: shiny
 output:
   flexdashboard::flex_dashboard:
-    logo: https://github.com/sewaneedata/syndemic/www/blob/main/syndemiclogo.png?raw=true
+    logo: https://github.com/sewaneedata/syndemic/blob/main/www/syndemiclogo.png?raw=true
     theme:
       version: 4
       bg: "#FAFBFE"
@@ -293,12 +293,12 @@ Home Page  <!--{data-orientation=rows} -->
 Column
 ---------------------------------------
 <!-- This loads in first half of the homepage which is a screenshoot of a canva poster, layout in rmarkdown is hard so this was an easy solution -->
-<img src="https://github.com/sewaneedata/syndemic/blob/main/HomePage.png?raw=true" width=100%> 
+<img src="https://github.com/sewaneedata/syndemic/blob/main/www/HomePage.png?raw=true" width=100%> 
 
 Column
 ---------------------------------------
 <!-- This loads in first half of the homepage which is a screenshoot of a canva poster, layout in rmarkdown is hard so this was an easy solution -->
-<img src="https://github.com/sewaneedata/syndemic/blob/main/Glossary.png?raw=true" width = 100%>
+<img src="https://github.com/sewaneedata/syndemic/blob/main/www/Glossary.png?raw=true" width = 100%>
 
 Relative Risk
 =======================================
@@ -1040,7 +1040,7 @@ Column
 
 ### DataLab 2022
 
-![The Sewanee DataLab makes the power of data analytics accessible for the greater good. We accomplish this by training and supporting a new generation of data scientists who work exclusively on social impact projects.The Sewanee DataLab seeks to expand the definition of data science and what it means to be a data scientist by training undergraduate students, academics, and professionals from a wide range of disciplines.](/Users/erteam/Desktop/Syndemic Project/syndemic/IMG_0607.jpg)
+![The Sewanee DataLab makes the power of data analytics accessible for the greater good. We accomplish this by training and supporting a new generation of data scientists who work exclusively on social impact projects.The Sewanee DataLab seeks to expand the definition of data science and what it means to be a data scientist by training undergraduate students, academics, and professionals from a wide range of disciplines.](https://github.com/sewaneedata/syndemic/blob/main/www/IMG_0607.JPG?raw=true)
 
 ```{r}
 
@@ -1054,22 +1054,22 @@ Column {style="height:80pc;"}
  This is also just images with captions-->
 ### Delana 
 
-![ Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. ](https://github.com/sewaneedata/syndemic/blob/main/IMG_7015.JPG?raw=true){#id .class }
+![ Delana Turner (she/her) C'24 is a student at the University of the South from Hyattsville, Maryland. At Sewanee, she is majoring in American Studies while minoring in Politics and earning a certificate in Civic and Global Leadership. When she graduates in 2024, she intends to pursue a career in public policy. ](https://github.com/sewaneedata/syndemic/blob/main/www/IMG_7015.JPG?raw=true){#id .class }
 
 
 ### Alan
 
-![Alan Kevin Espinoza (he/him) is a student at the University of the South from Houston, Texas. During his time at Sewanee, he has begun his major in Computer Science and Mathematics while working on being part of the 3-2 engineering program where after 3 years at Sewanee, he will do another 2 years studing Data Science at Washington University at St.Luios. On campus he is the President of the fraternity Gamma Sigma Phi, treasurer of the Hispanic Organization of Latino Awarness, helps his peers in the Academic Technology Center, and loves to rock climb on his free time. When he graduates, he intends to start his carrer as a data analyst or software engineer!](https://github.com/sewaneedata/syndemic/blob/main/IMG-1319.jpg?raw=true)
+![Alan Kevin Espinoza (he/him) is a student at the University of the South from Houston, Texas. During his time at Sewanee, he has begun his major in Computer Science and Mathematics while working on being part of the 3-2 engineering program where after 3 years at Sewanee, he will do another 2 years studing Data Science at Washington University at St.Luios. On campus he is the President of the fraternity Gamma Sigma Phi, treasurer of the Hispanic Organization of Latino Awarness, helps his peers in the Academic Technology Center, and loves to rock climb on his free time. When he graduates, he intends to start his carrer as a data analyst or software engineer!](https://github.com/sewaneedata/syndemic/blob/main/www/IMG-1319.jpg?raw=true)
 
 </p>
 
 ### Jacob
 
-![Jacob Herron (he/him) C'24 is a student at the University of the South from Rickman, Tennessee. During his time at Sewanee, he has started his major in economics and is working on a minor in mathematics. On campus, he can be found teaching new fencers at Fowler, catching up with friends and professors at Stirlings, or helping his peers at his job in the library. When he gradautes, he intends to pursue a masters degree in economics in hopes of working as an economist.](https://github.com/sewaneedata/syndemic/blob/main/IMG_5896.jpeg?raw=true)
+![Jacob Herron (he/him) C'24 is a student at the University of the South from Rickman, Tennessee. During his time at Sewanee, he has started his major in economics and is working on a minor in mathematics. On campus, he can be found teaching new fencers at Fowler, catching up with friends and professors at Stirlings, or helping his peers at his job in the library. When he gradautes, he intends to pursue a masters degree in economics in hopes of working as an economist.](https://github.com/sewaneedata/syndemic/blob/main/www/IMG_5896.jpeg?raw=true)
 
 ### Amber
 
-![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](https://github.com/sewaneedata/syndemic/blob/main/IMG-AMBR.jpeg?raw=true)
+![Amber Coyne (she/her) is a Public Health Advisor with the CDC skilled in community engagement, strategic planning, and innovative program development. Her work includes cross-sectoral collaborator liaising between nonprofits, local, state, and federal health agencies, as well as a diverse portfolio of experience including outbreak response, telemedicine implementation, public health social marketing, program evaluation, and community outreach. She is passionate about health equity, syndemic approaches, and public health capacity building.](https://github.com/sewaneedata/syndemic/blob/main/www/IMG-AMBR.jpeg?raw=true)
 
 <!-- Needed to make this into an shiny app essential! -->
 ```{r}
